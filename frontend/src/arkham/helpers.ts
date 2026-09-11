@@ -108,6 +108,8 @@ export function isLocalized(src: string) {
 }
 
 export function imgsrc(src: string): string {
+  const printedArt = src.replace(/^\//, '').match(/^cards\/(.+)\.avif$/)?.[1]
+
   // A debug-authored card carries its art with it (a URL, or a data URI for a
   // dropped image) rather than living under the asset host -- unless it names a
   // printed card's art instead, which resolves down the ordinary path below.
