@@ -547,6 +547,79 @@ const previewDef = computed(() => {
   }
 })
 
+// ---------------------------------------------------------- effects code ---
+
+/* The meta keys that carry what a card does, as opposed to what it prints. They
+ * are the card's "code": copied out whole and pasted back whole, so an effect
+ * can be written somewhere else and dropped in. */
+const BEHAVIOUR_KEYS = [
+  '_abilities', '_handlers', '_modifiers', '_onPlay',
+  '_onRevelation', '_revelationPlacement',
+  '_elderSignRevealSteps', '_elderSignSteps', '_elderSignSuccessSteps',
+]
+
+/* Taken from buildDef so it is exactly what Save would store. */
+const effectsFromForm = computed(() => {
+  const meta = buildDef('*preview').meta
+  const picked: Record<string, any> = {}
+  for (const key of BEHAVIOUR_KEYS) if (meta[key] !== undefined) picked[key] = meta[key]
+  return JSON.stringify(picked, null, 2)
+})
+
+// Null until the box is typed in, so the form's own edits keep flowing into it.
+const effectsDraft = ref<string | null>(null)
+const effectsError = ref<string | null>(null)
+const effectsCopied = ref(false)
+const effectsText = computed(() => effectsDraft.value ?? effectsFromForm.value)
+
+function onEffectsInput(event: Event) {
+  effectsDraft.value = (event.target as HTMLTextAreaElement).value
+  effectsError.value = null
+}
+
+async function copyEffects() {
+  await navigator.clipboard.writeText(effectsText.value)
+  effectsCopied.value = true
+  setTimeout(() => (effectsCopied.value = false), 1500)
+}
+
+function revertEffects() {
+  effectsDraft.value = null
+  effectsError.value = null
+}
+
+/* The pasted block replaces the card's behaviour outright: a key left out is an
+ * effect removed, the same as deleting it in the editors above. */
+function applyEffects() {
+  // Pasted AI output often comes fenced as a markdown code block.
+  const text = (effectsDraft.value ?? '').trim().replace(/^```\w*\s*\n?|\n?```$/g, '')
+  let parsed: any
+  try {
+    parsed = text ? JSON.parse(text) : {}
+  } catch (e) {
+    effectsError.value = `Not valid JSON: ${(e as Error).message}`
+    return
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    effectsError.value = 'Expected an object, like { "_abilities": [ … ] }'
+    return
+  }
+  for (const [key, value] of Object.entries(parsed)) {
+    if (!BEHAVIOUR_KEYS.includes(key)) {
+      effectsError.value = `Unknown key "${key}". Expected one of: ${BEHAVIOUR_KEYS.join(', ')}`
+      return
+    }
+    if (key === '_revelationPlacement' ? typeof value !== 'string' : !Array.isArray(value)) {
+      effectsError.value = `"${key}" should be ${key === '_revelationPlacement' ? 'a string' : 'a list'}`
+      return
+    }
+  }
+  applyBehaviour(parsed)
+  // Revelation steps do nothing unless the card is marked as having one.
+  if (parsed._onRevelation?.length && canHaveRevelation.value) form.revelation = true
+  revertEffects()
+}
+
 
 // ------------------------------------------------------------------- art ---
 
@@ -653,6 +726,20 @@ const FORM_META_KEYS = [
   '_elderSign', '_elderSignRevealSteps', '_elderSignSteps', '_elderSignSuccessSteps', '_onPlay',
 ]
 
+/* The behaviour half of loading a card, shared with the effects code box so
+ * pasting code and opening a saved card cannot read it differently. */
+function applyBehaviour(meta: Record<string, any>) {
+  form.revelationPlacement = meta._revelationPlacement ?? ''
+  form.revelationSteps = meta._onRevelation ?? []
+  form.elderSignRevealSteps = meta._elderSignRevealSteps ?? []
+  form.elderSignSteps = meta._elderSignSteps ?? []
+  form.elderSignSuccessSteps = meta._elderSignSuccessSteps ?? []
+  form.onPlaySteps = meta._onPlay ?? []
+  form.abilities = meta._abilities ?? []
+  form.handlers = meta._handlers ?? []
+  form.modifiers = meta._modifiers ?? []
+}
+
 const gameValueNumber = (v: any) => (v && typeof v.contents === 'number' ? String(v.contents) : '')
 const isPerPlayer = (v: any) => v?.tag === 'PerPlayer'
 
@@ -663,6 +750,7 @@ async function loadCard(card: CustomCard) {
   const meta = def.meta ?? {}
 
   Object.assign(form, blankForm())
+  revertEffects()
   loadedCode.value = def.cardCode ?? null
   form.title = def.name?.title ?? ''
   form.subtitle = def.name?.subtitle ?? ''
@@ -675,8 +763,6 @@ async function loadCard(card: CustomCard) {
   form.permanent = !!def.permanent
   form.weaknessKind = typeof def.cardSubType === 'string' ? def.cardSubType : ''
   form.revelation = !!def.revelation && def.revelation !== 'NoRevelation'
-  form.revelationPlacement = meta._revelationPlacement ?? ''
-  form.revelationSteps = meta._onRevelation ?? []
   form.actions = Array.isArray(def.actions) ? def.actions : []
   form.traits = (def.cardTraits ?? []).map((t: string) => traitDisplay.value.get(t) ?? t).join('. ')
   form.icons = (def.skills ?? []).map((s: any) => (s.tag === 'SkillIcon' ? s.contents : 'Wild'))
@@ -709,9 +795,6 @@ async function loadCard(card: CustomCard) {
   form.cardNumber = meta.number ?? ''
   // Blank when the card has none, so no Elder sign tab is offered for it.
   form.elderSign = meta._elderSign === undefined ? '' : String(meta._elderSign)
-  form.elderSignRevealSteps = meta._elderSignRevealSteps ?? []
-  form.elderSignSteps = meta._elderSignSteps ?? []
-  form.elderSignSuccessSteps = meta._elderSignSuccessSteps ?? []
 
   form.artUploaded = { art: card.art }
   form.artUrls = {}
@@ -721,10 +804,7 @@ async function loadCard(card: CustomCard) {
 
   form.prey = meta.prey ?? null
   form.spawnAt = meta.spawnAt ?? null
-  form.onPlaySteps = meta._onPlay ?? []
-  form.abilities = meta._abilities ?? []
-  form.handlers = meta._handlers ?? []
-  form.modifiers = meta._modifiers ?? []
+  applyBehaviour(meta)
   form.additionalCost = def.additionalCost ?? null
   form.deckRestrictions = def.deckRestrictions ?? []
   form.bonded = (def.bondedWith ?? []).map((b: any) => ({
@@ -748,6 +828,7 @@ async function loadCard(card: CustomCard) {
 function reset() {
   clearArtPreviews()
   Object.assign(form, blankForm())
+  revertEffects()
   loadedCode.value = null
   error.value = null
 }
@@ -1170,6 +1251,36 @@ defineExpose({ loadCard, reset, buildCustomCard, cardType: computed(() => form.c
               :modifiers="form.modifiers"
               v-model:handlers="form.handlers"
             />
+          </fieldset>
+
+          <!-- The card's behaviour as one block of JSON, to copy out, edit
+               elsewhere, and paste back. -->
+          <fieldset class="effects-code">
+            <legend>Effects code</legend>
+            <p class="hint">
+              Everything this card does, as JSON. Copy it out, edit it, paste it back and
+              Apply. Applying replaces the card's effects: a key left out is removed.
+            </p>
+            <textarea
+              :value="effectsText"
+              rows="16"
+              spellcheck="false"
+              placeholder='{ "_abilities": [ … ] }'
+              @input="onEffectsInput"
+              @keydown.stop
+            />
+            <p v-if="effectsError" class="effects-error">{{ effectsError }}</p>
+            <div class="effects-actions">
+              <button type="button" @click="copyEffects">
+                {{ effectsCopied ? 'Copied' : 'Copy' }}
+              </button>
+              <button type="button" :disabled="effectsDraft === null" @click="applyEffects">
+                Apply
+              </button>
+              <button v-if="effectsDraft !== null" type="button" @click="revertEffects">
+                Revert
+              </button>
+            </div>
           </fieldset>
 
           <details>
@@ -1676,6 +1787,37 @@ fieldset {
 
   .library-card:hover & {
     opacity: 1;
+  }
+}
+
+.effects-code textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  white-space: pre;
+}
+
+.effects-error {
+  color: #f87171;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.effects-actions {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--button-highlight);
+    border-radius: 4px;
+    color: #eee;
+    cursor: pointer;
+    padding: 0.35rem 0.8rem;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
   }
 }
 
