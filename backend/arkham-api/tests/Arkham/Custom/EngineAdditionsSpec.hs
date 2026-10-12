@@ -6,6 +6,7 @@ import Arkham.Helpers.History (hasHistory)
 import Arkham.History (HistoryType (RoundHistory))
 import Arkham.Matcher qualified as Matcher
 import Data.Aeson (Value, object, (.=))
+import Arkham.Name (Name)
 import Data.Map.Strict qualified as Map
 import TestImport.New
 

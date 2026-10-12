@@ -1925,7 +1925,12 @@ windowMatches iid rawSource window'@(windowTiming &&& windowType -> (timing', wT
     Matcher.ChaosTokenSealedOnTarget timing targetMatcher tokenMatcher ->
       guardTiming timing $ \case
         Window.ChaosTokenSealedOnTarget target token ->
-          andM [targetMatches target targetMatcher, matchChaosToken iid token tokenMatcher]
+          -- The token is sealed by now, and a matcher only sees the bag unless told
+          -- to look further.
+          andM
+            [ targetMatches target targetMatcher
+            , matchChaosToken iid token (Matcher.IncludeSealed tokenMatcher)
+            ]
         _ -> noMatch
     Matcher.ChaosTokenSealed timing whoMatcher tokenMatcher ->
       guardTiming timing $ \case
