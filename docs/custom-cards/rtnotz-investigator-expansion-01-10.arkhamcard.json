@@ -100,7 +100,10 @@
               "limit": {
                 "tag": "PlayerLimit",
                 "contents": [
-                  "PerRound",
+                  {
+                    "tag": "PerRound",
+                    "contents": []
+                  },
                   1
                 ]
               },
@@ -519,7 +522,7 @@
                       "contents": []
                     },
                     {
-                      "tag": "AtLeast",
+                      "tag": "GreaterThanOrEqualTo",
                       "contents": {
                         "tag": "Static",
                         "contents": 1
@@ -573,7 +576,10 @@
               "limit": {
                 "tag": "PlayerLimit",
                 "contents": [
-                  "PerRound",
+                  {
+                    "tag": "PerRound",
+                    "contents": []
+                  },
                   1
                 ]
               },
@@ -581,37 +587,42 @@
                 {
                   "request": {
                     "push": {
-                      "tag": "Search",
+                      "tag": "SearchMessage",
                       "contents": {
-                        "searchType": "Looking",
-                        "searchInvestigator": "$iid",
-                        "searchSource": "$source",
-                        "searchTarget": {
-                          "tag": "EncounterDeckTarget",
-                          "contents": []
-                        },
-                        "searchZones": [
-                          [
-                            {
-                              "tag": "FromTopOfDeck",
-                              "contents": 2
-                            },
-                            "PutBackInAnyOrder"
-                          ]
-                        ],
-                        "searchMatcher": {
-                          "tag": "BasicCardMatch",
-                          "contents": {
-                            "tag": "AnyCard",
+                        "tag": "Search_",
+                        "contents": {
+                          "searchType": "Looking",
+                          "searchInvestigator": "$iid",
+                          "searchSource": "$source",
+                          "searchTarget": {
+                            "tag": "EncounterDeckTarget",
                             "contents": []
-                          }
-                        },
-                        "searchFoundStrategy": {
-                          "tag": "DeferSearchedToTarget",
-                          "contents": [
-                            "$target",
-                            "IsNotDraw"
-                          ]
+                          },
+                          "searchZones": [
+                            [
+                              {
+                                "tag": "FromTopOfDeck",
+                                "contents": 2
+                              },
+                              "PutBackInAnyOrder"
+                            ]
+                          ],
+                          "searchMatcher": {
+                            "tag": "BasicCardMatch",
+                            "contents": {
+                              "tag": "AnyCard",
+                              "contents": []
+                            }
+                          },
+                          "searchFoundStrategy": {
+                            "tag": "DeferSearchedToTarget",
+                            "contents": [
+                              "$target",
+                              "IsNotDraw"
+                            ]
+                          },
+                          "searchFoundCards": {},
+                          "searchDrawnCards": []
                         }
                       }
                     },
@@ -945,13 +956,16 @@
           "_onRevelation": [
             {
               "push": {
-                "tag": "PlaceTokens",
-                "contents": [
-                  "$source",
-                  "$target",
-                  "Horror",
-                  3
-                ]
+                "tag": "TokenMessage",
+                "contents": {
+                  "tag": "PlaceTokens_",
+                  "contents": [
+                    "$source",
+                    "$target",
+                    "Horror",
+                    3
+                  ]
+                }
               }
             }
           ],
@@ -1018,7 +1032,10 @@
               "limit": {
                 "tag": "PlayerLimit",
                 "contents": [
-                  "PerRound",
+                  {
+                    "tag": "PerRound",
+                    "contents": []
+                  },
                   1
                 ]
               },
@@ -1031,17 +1048,20 @@
                         "steps": [
                           {
                             "push": {
-                              "tag": "MoveTokens",
-                              "contents": [
-                                "$source",
-                                "$source",
-                                {
-                                  "tag": "InvestigatorTarget",
-                                  "contents": "$owner"
-                                },
-                                "Horror",
-                                1
-                              ]
+                              "tag": "TokenMessage",
+                              "contents": {
+                                "tag": "MoveTokens_",
+                                "contents": [
+                                  "$source",
+                                  "$source",
+                                  {
+                                    "tag": "InvestigatorTarget",
+                                    "contents": "$owner"
+                                  },
+                                  "Horror",
+                                  1
+                                ]
+                              }
                             }
                           },
                           {
@@ -1091,13 +1111,16 @@
                           },
                           {
                             "push": {
-                              "tag": "RemoveTokens",
-                              "contents": [
-                                "$source",
-                                "$target",
-                                "Horror",
-                                1
-                              ]
+                              "tag": "TokenMessage",
+                              "contents": {
+                                "tag": "RemoveTokens_",
+                                "contents": [
+                                  "$source",
+                                  "$target",
+                                  "Horror",
+                                  1
+                                ]
+                              }
                             }
                           },
                           {
@@ -1349,13 +1372,16 @@
                   "then": [
                     {
                       "push": {
-                        "tag": "PlaceTokens",
-                        "contents": [
-                          "$source",
-                          "$target",
-                          "Resource",
-                          "$n"
-                        ]
+                        "tag": "TokenMessage",
+                        "contents": {
+                          "tag": "PlaceTokens_",
+                          "contents": [
+                            "$source",
+                            "$target",
+                            "Resource",
+                            "$n"
+                          ]
+                        }
                       }
                     }
                   ]
@@ -1431,13 +1457,16 @@
           "_onRevelation": [
             {
               "push": {
-                "tag": "PlaceTokens",
-                "contents": [
-                  "$source",
-                  "$target",
-                  "Resource",
-                  3
-                ]
+                "tag": "TokenMessage",
+                "contents": {
+                  "tag": "PlaceTokens_",
+                  "contents": [
+                    "$source",
+                    "$target",
+                    "Resource",
+                    3
+                  ]
+                }
               }
             }
           ],
@@ -1458,7 +1487,7 @@
                 "criteria": {
                   "tag": "ResourcesOnThis",
                   "contents": {
-                    "tag": "AtLeast",
+                    "tag": "GreaterThanOrEqualTo",
                     "contents": {
                       "tag": "Static",
                       "contents": 1
@@ -1495,7 +1524,7 @@
                 "criteria": {
                   "tag": "ResourcesOnThis",
                   "contents": {
-                    "tag": "AtLeast",
+                    "tag": "GreaterThanOrEqualTo",
                     "contents": {
                       "tag": "Static",
                       "contents": 1
@@ -1541,7 +1570,7 @@
                   {
                     "tag": "ResourcesOnThis",
                     "contents": {
-                      "tag": "AtLeast",
+                      "tag": "GreaterThanOrEqualTo",
                       "contents": {
                         "tag": "Static",
                         "contents": 1
@@ -1567,13 +1596,16 @@
                   "then": [
                     {
                       "push": {
-                        "tag": "RemoveTokens",
-                        "contents": [
-                          "$source",
-                          "$target",
-                          "Resource",
-                          1
-                        ]
+                        "tag": "TokenMessage",
+                        "contents": {
+                          "tag": "RemoveTokens_",
+                          "contents": [
+                            "$source",
+                            "$target",
+                            "Resource",
+                            1
+                          ]
+                        }
                       }
                     },
                     {
@@ -1599,13 +1631,16 @@
                   "then": [
                     {
                       "push": {
-                        "tag": "RemoveTokens",
-                        "contents": [
-                          "$source",
-                          "$target",
-                          "Resource",
-                          1
-                        ]
+                        "tag": "TokenMessage",
+                        "contents": {
+                          "tag": "RemoveTokens_",
+                          "contents": [
+                            "$source",
+                            "$target",
+                            "Resource",
+                            1
+                          ]
+                        }
                       }
                     }
                   ]
@@ -1688,7 +1723,10 @@
               "limit": {
                 "tag": "PlayerLimit",
                 "contents": [
-                  "PerRound",
+                  {
+                    "tag": "PerRound",
+                    "contents": []
+                  },
                   1
                 ]
               },
@@ -1754,20 +1792,23 @@
                             "steps": [
                               {
                                 "push": {
-                                  "tag": "DealDamage",
-                                  "contents": [
-                                    {
-                                      "tag": "EnemyTarget",
-                                      "contents": "$enemy"
-                                    },
-                                    {
-                                      "damageAssignmentSource": "$source",
-                                      "damageAssignmentAmount": 1,
-                                      "damageAssignmentDamageEffect": "NonAttackDamageEffect",
-                                      "damageAssignmentDirect": false,
-                                      "damageAssignmentDelayed": false
-                                    }
-                                  ]
+                                  "tag": "DamageMessage",
+                                  "contents": {
+                                    "tag": "DealDamage_",
+                                    "contents": [
+                                      {
+                                        "tag": "EnemyTarget",
+                                        "contents": "$enemy"
+                                      },
+                                      {
+                                        "damageAssignmentSource": "$source",
+                                        "damageAssignmentAmount": 1,
+                                        "damageAssignmentDamageEffect": "NonAttackDamageEffect",
+                                        "damageAssignmentDirect": false,
+                                        "damageAssignmentDelayed": false
+                                      }
+                                    ]
+                                  }
                                 }
                               }
                             ]
@@ -1861,8 +1902,11 @@
                           "steps": [
                             {
                               "push": {
-                                "tag": "UnsealChaosToken",
-                                "contents": "$released"
+                                "tag": "SealMessage",
+                                "contents": {
+                                  "tag": "UnsealChaosToken_",
+                                  "contents": "$released"
+                                }
                               }
                             },
                             {
@@ -1883,21 +1927,27 @@
                                 "steps": [
                                   {
                                     "push": {
-                                      "tag": "SealChaosToken",
-                                      "contents": "$sealing"
+                                      "tag": "SealMessage",
+                                      "contents": {
+                                        "tag": "SealChaosToken_",
+                                        "contents": "$sealing"
+                                      }
                                     }
                                   },
                                   {
                                     "push": {
-                                      "tag": "SealedChaosToken",
-                                      "contents": [
-                                        "$sealing",
-                                        "$iid",
-                                        {
-                                          "tag": "AssetTarget",
-                                          "contents": "$card"
-                                        }
-                                      ]
+                                      "tag": "SealMessage",
+                                      "contents": {
+                                        "tag": "SealedChaosToken_",
+                                        "contents": [
+                                          "$sealing",
+                                          "$iid",
+                                          {
+                                            "tag": "AssetTarget",
+                                            "contents": "$card"
+                                          }
+                                        ]
+                                      }
                                     }
                                   }
                                 ]
@@ -1949,8 +1999,11 @@
                           "steps": [
                             {
                               "push": {
-                                "tag": "UnsealChaosToken",
-                                "contents": "$released"
+                                "tag": "SealMessage",
+                                "contents": {
+                                  "tag": "UnsealChaosToken_",
+                                  "contents": "$released"
+                                }
                               }
                             },
                             {
@@ -1971,21 +2024,27 @@
                                 "steps": [
                                   {
                                     "push": {
-                                      "tag": "SealChaosToken",
-                                      "contents": "$sealing"
+                                      "tag": "SealMessage",
+                                      "contents": {
+                                        "tag": "SealChaosToken_",
+                                        "contents": "$sealing"
+                                      }
                                     }
                                   },
                                   {
                                     "push": {
-                                      "tag": "SealedChaosToken",
-                                      "contents": [
-                                        "$sealing",
-                                        "$iid",
-                                        {
-                                          "tag": "InvestigatorTarget",
-                                          "contents": "$iid"
-                                        }
-                                      ]
+                                      "tag": "SealMessage",
+                                      "contents": {
+                                        "tag": "SealedChaosToken_",
+                                        "contents": [
+                                          "$sealing",
+                                          "$iid",
+                                          {
+                                            "tag": "InvestigatorTarget",
+                                            "contents": "$iid"
+                                          }
+                                        ]
+                                      }
                                     }
                                   }
                                 ]
