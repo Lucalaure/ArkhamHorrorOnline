@@ -3019,6 +3019,12 @@ runGameMessage msg g = case msg of
     card <- getCard cardId
     push $ ShuffleCardsIntoDeck deck [card]
     pure g
+  {- Every card type takes the token in its own runner, so the window naming the
+  card it landed on is raised once here rather than in each of them. -}
+  SealedChaosToken token _ target -> do
+    let sealed = Window.ChaosTokenSealedOnTarget target token
+    pushAll =<< sequence [checkWindows [mkWhen sealed], checkWindows [mkAfter sealed]]
+    pure g
   DebugSealChaosToken tokenId target -> do
     tokens <- getBagChaosTokens
     for_ (find ((== tokenId) . (.id)) tokens) \token ->
@@ -4146,7 +4152,18 @@ runGameMessage msg g = case msg of
             VengeanceCard _ -> error "Vengeance card"
     pure g
   Discard miid source (TreacheryTarget tid) -> do
-    mcard <- fieldMay TreacheryCard tid
+    -- As for an asset: a treachery that cannot leave play stays put, unless the
+    -- discard is its own -- "it cannot leave play except by the ability below".
+    let selfSourced = \case
+          TreacherySource tid' -> tid' == tid
+          AbilitySource s _ -> selfSourced s
+          UseAbilitySource _ s _ -> selfSourced s
+          _ -> False
+    cannotLeavePlay <-
+      if selfSourced source
+        then pure False
+        else elem CannotLeavePlay <$> getModifiers (TreacheryTarget tid)
+    mcard <- if cannotLeavePlay then pure Nothing else fieldMay TreacheryCard tid
     for_ mcard \card -> do
       inVictory <- selectAny $ VictoryDisplayCardMatch $ basic $ CardWithId $ toCardId card
       unless inVictory do

@@ -1,0 +1,2015 @@
+{
+  "version": 2,
+  "set": {
+    "name": "RtNotZ Investigator Expansion — scripted 1–10",
+    "description": "Cards 1–10 of Unofficial Return to Night of the Zealot - Investigator Expansion, with their abilities written for the engine."
+  },
+  "cards": [
+    {
+      "def": {
+        "cardCode": "*d545b38ef3cf486aa02612ed94b334530",
+        "art": "*d545b38ef3cf486aa02612ed94b334530",
+        "cardType": "InvestigatorType",
+        "name": {
+          "title": "Roland Banks",
+          "subtitle": "The Fed"
+        },
+        "cardTraits": [
+          "Agency",
+          "Detective"
+        ],
+        "skills": [],
+        "keywords": [],
+        "unique": true,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "d545b38e-f3cf-486a-a026-12ed94b33453",
+          "number": "1",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "health": 9,
+          "sanity": 5,
+          "willpower": 3,
+          "intellect": 3,
+          "combat": 4,
+          "agility": 2,
+          "backArt": "https://res.cloudinary.com/dxdnloddw/image/upload/v1778580719/AH_LCG/Guardian_001.RolandBanks_back_original.jpg",
+          "_abilities": [
+            {
+              "tooltip": "After you successfully investigate: Place 1 ammo token on a Firearm asset you control.",
+              "type": {
+                "tag": "ReactionAbility",
+                "window": {
+                  "tag": "SkillTestResult",
+                  "contents": [
+                    "After",
+                    {
+                      "tag": "You",
+                      "contents": []
+                    },
+                    {
+                      "tag": "WhileInvestigating",
+                      "contents": {
+                        "tag": "Anywhere",
+                        "contents": []
+                      }
+                    },
+                    {
+                      "tag": "SuccessResult",
+                      "contents": {
+                        "tag": "AnyValue",
+                        "contents": []
+                      }
+                    }
+                  ]
+                },
+                "cost": {
+                  "tag": "Free",
+                  "contents": []
+                },
+                "actions": []
+              },
+              "criteria": {
+                "tag": "Criteria",
+                "contents": [
+                  {
+                    "tag": "Self",
+                    "contents": []
+                  },
+                  {
+                    "tag": "AssetExists",
+                    "contents": {
+                      "tag": "AssetMatches",
+                      "contents": [
+                        {
+                          "tag": "AssetControlledBy",
+                          "contents": {
+                            "tag": "You",
+                            "contents": []
+                          }
+                        },
+                        {
+                          "tag": "AssetWithTrait",
+                          "contents": "Firearm"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "limit": {
+                "tag": "PlayerLimit",
+                "contents": [
+                  "PerRound",
+                  1
+                ]
+              },
+              "steps": [
+                {
+                  "chooseFrom": {
+                    "query": {
+                      "kind": "asset",
+                      "matcher": {
+                        "tag": "AssetMatches",
+                        "contents": [
+                          {
+                            "tag": "AssetControlledBy",
+                            "contents": {
+                              "tag": "InvestigatorWithId",
+                              "contents": "$iid"
+                            }
+                          },
+                          {
+                            "tag": "AssetWithTrait",
+                            "contents": "Firearm"
+                          }
+                        ]
+                      }
+                    },
+                    "bind": "firearm",
+                    "steps": [
+                      {
+                        "push": {
+                          "tag": "AddUses",
+                          "contents": [
+                            "$source",
+                            "$firearm",
+                            "Ammo",
+                            1
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "_elderSign": 1,
+          "_elderSignSuccessSteps": [
+            {
+              "when": {
+                "criteria": {
+                  "tag": "DuringSkillTest",
+                  "contents": {
+                    "tag": "WhileAttacking",
+                    "contents": []
+                  }
+                }
+              },
+              "then": [
+                {
+                  "discover": {}
+                }
+              ]
+            }
+          ],
+          "_signatures": [
+            "*43433775620b4e108583253eb3f3e6c20",
+            "*3497e84b96984d54937c65096eb6c82c0"
+          ]
+        },
+        "classSymbols": [
+          "Guardian"
+        ]
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1778580717/AH_LCG/Guardian_001.RolandBanks_front_original.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*43433775620b4e108583253eb3f3e6c20",
+        "art": "*43433775620b4e108583253eb3f3e6c20",
+        "cardType": "AssetType",
+        "name": {
+          "title": "Roland's .38 Special",
+          "subtitle": null
+        },
+        "cardTraits": [
+          "Item",
+          "Weapon",
+          "Firearm"
+        ],
+        "skills": [
+          {
+            "tag": "SkillIcon",
+            "contents": "SkillWillpower"
+          },
+          {
+            "tag": "SkillIcon",
+            "contents": "SkillCombat"
+          },
+          {
+            "tag": "WildIcon",
+            "contents": []
+          }
+        ],
+        "keywords": [],
+        "unique": true,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "43433775-620b-4e10-8583-253eb3f3e6c2",
+          "number": "2",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "_abilities": [
+            {
+              "tooltip": "Spend 1 ammo: Fight. +2 [combat]. You may place 1 of your clues on your location for +2 damage.",
+              "type": {
+                "tag": "ActionAbility",
+                "actions": [
+                  "Fight"
+                ],
+                "cost": {
+                  "tag": "Costs",
+                  "contents": [
+                    {
+                      "tag": "ActionCost",
+                      "contents": 1
+                    },
+                    {
+                      "tag": "UseCost",
+                      "contents": [
+                        {
+                          "tag": "AssetWithId",
+                          "contents": "$id"
+                        },
+                        "Ammo",
+                        1
+                      ]
+                    },
+                    {
+                      "tag": "OptionalCost",
+                      "contents": {
+                        "tag": "PlaceClueOnLocationCost",
+                        "contents": {
+                          "tag": "Static",
+                          "contents": 1
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "criteria": {
+                "tag": "ControlsThis",
+                "contents": []
+              },
+              "steps": [
+                {
+                  "let": "cluesPaid",
+                  "be": {
+                    "apply": "cluesPaid",
+                    "to": "$payment"
+                  }
+                },
+                {
+                  "if": {
+                    "eq": [
+                      "$cluesPaid",
+                      1
+                    ]
+                  },
+                  "then": [
+                    {
+                      "fight": {
+                        "modifiers": [
+                          {
+                            "tag": "SkillModifier",
+                            "skillType": "SkillCombat",
+                            "value": 2
+                          },
+                          {
+                            "tag": "DamageDealt",
+                            "contents": 2
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "else": [
+                    {
+                      "fight": {
+                        "modifiers": [
+                          {
+                            "tag": "SkillModifier",
+                            "skillType": "SkillCombat",
+                            "value": 2
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "_handlers": [
+            {
+              "on": "Defeated",
+              "requires": [
+                [
+                  "$2",
+                  "$source"
+                ]
+              ],
+              "steps": [
+                {
+                  "choose": {
+                    "options": [
+                      {
+                        "label": "Immediately investigate your location",
+                        "steps": [
+                          {
+                            "investigate": {
+                              "asAction": true
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Do not investigate",
+                        "steps": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "classSymbols": [
+          "Neutral"
+        ],
+        "cost": {
+          "tag": "StaticCost",
+          "contents": 3
+        },
+        "slots": [
+          "HandSlot"
+        ],
+        "deckRestrictions": [
+          {
+            "tag": "Signature",
+            "contents": "*d545b38ef3cf486aa02612ed94b334530"
+          }
+        ],
+        "uses": {
+          "type": "Ammo",
+          "amount": 4
+        }
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1763415036/Return_to_Night_of_the_Zealot_Custom_Investigator_Expansion/002.Rolands38Special_front.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*3497e84b96984d54937c65096eb6c82c0",
+        "art": "*3497e84b96984d54937c65096eb6c82c0",
+        "cardType": "PlayerTreacheryType",
+        "name": {
+          "title": "Cover Up",
+          "subtitle": null
+        },
+        "cardTraits": [
+          "Task"
+        ],
+        "skills": [],
+        "keywords": [],
+        "unique": false,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "3497e84b-9698-4d54-937c-65096eb6c82c",
+          "number": "3",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "_revelationPlacement": "threatArea",
+          "_modifiers": [
+            {
+              "kind": "investigator",
+              "matcher": {
+                "tag": "HasMatchingTreachery",
+                "contents": {
+                  "tag": "TreacheryWithId",
+                  "contents": "$id"
+                }
+              },
+              "modifiers": [
+                {
+                  "tag": "CannotDiscoverClues",
+                  "contents": []
+                }
+              ],
+              "if": {
+                "criteria": {
+                  "tag": "HasHistory",
+                  "contents": [
+                    "RoundHistory",
+                    {
+                      "tag": "Anyone",
+                      "contents": []
+                    },
+                    {
+                      "tag": "DefeatedEnemiesCount",
+                      "contents": {
+                        "tag": "GreaterThan",
+                        "contents": {
+                          "tag": "Static",
+                          "contents": 0
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "_abilities": [
+            {
+              "tooltip": "Place 1 of your clues on your location: Discard Cover Up.",
+              "type": {
+                "tag": "ActionAbility",
+                "actions": [],
+                "cost": {
+                  "tag": "Costs",
+                  "contents": [
+                    {
+                      "tag": "ActionCost",
+                      "contents": 2
+                    },
+                    {
+                      "tag": "PlaceClueOnLocationCost",
+                      "contents": {
+                        "tag": "Static",
+                        "contents": 1
+                      }
+                    }
+                  ]
+                }
+              },
+              "criteria": {
+                "tag": "InThreatAreaOf",
+                "contents": {
+                  "tag": "You",
+                  "contents": []
+                }
+              },
+              "steps": [
+                {
+                  "discardCard": {
+                    "target": "$target"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "cardSubType": "Weakness",
+        "deckRestrictions": [
+          {
+            "tag": "Signature",
+            "contents": "*d545b38ef3cf486aa02612ed94b334530"
+          }
+        ],
+        "revelation": "IsRevelation"
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1765534808/Return_to_Night_of_the_Zealot_Custom_Investigator_Expansion/003.CoverUp_front.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*7b48d82900954b3ea2c38fa609d111e20",
+        "art": "*7b48d82900954b3ea2c38fa609d111e20",
+        "cardType": "InvestigatorType",
+        "name": {
+          "title": "Daisy Walker",
+          "subtitle": "The Librarian"
+        },
+        "cardTraits": [
+          "Miskatonic"
+        ],
+        "skills": [],
+        "keywords": [],
+        "unique": true,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "7b48d829-0095-4b3e-a2c3-8fa609d111e2",
+          "number": "4",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "health": 7,
+          "sanity": 7,
+          "willpower": 3,
+          "intellect": 4,
+          "combat": 1,
+          "agility": 3,
+          "backArt": "https://res.cloudinary.com/dxdnloddw/image/upload/v1778580734/AH_LCG/Seeker_004.DaisyWalker_back_original.jpg",
+          "_abilities": [
+            {
+              "tooltip": "After you discover clues from a non-basic investigate action: look at the top 2 cards of the encounter deck.",
+              "type": {
+                "tag": "ReactionAbility",
+                "window": {
+                  "tag": "DiscoverClues",
+                  "contents": [
+                    "After",
+                    {
+                      "tag": "You",
+                      "contents": []
+                    },
+                    {
+                      "tag": "Anywhere",
+                      "contents": []
+                    },
+                    {
+                      "tag": "AtLeast",
+                      "contents": {
+                        "tag": "Static",
+                        "contents": 1
+                      }
+                    }
+                  ]
+                },
+                "cost": {
+                  "tag": "Free",
+                  "contents": []
+                },
+                "actions": []
+              },
+              "criteria": {
+                "tag": "Criteria",
+                "contents": [
+                  {
+                    "tag": "Self",
+                    "contents": []
+                  },
+                  {
+                    "tag": "DuringSkillTest",
+                    "contents": {
+                      "tag": "SkillTestMatches",
+                      "contents": [
+                        {
+                          "tag": "WhileInvestigating",
+                          "contents": {
+                            "tag": "Anywhere",
+                            "contents": []
+                          }
+                        },
+                        {
+                          "tag": "SkillTestSourceMatches",
+                          "contents": {
+                            "tag": "NotSource",
+                            "contents": {
+                              "tag": "SourceIsAbility",
+                              "contents": {
+                                "tag": "BasicAbility",
+                                "contents": []
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "limit": {
+                "tag": "PlayerLimit",
+                "contents": [
+                  "PerRound",
+                  1
+                ]
+              },
+              "steps": [
+                {
+                  "request": {
+                    "push": {
+                      "tag": "Search",
+                      "contents": {
+                        "searchType": "Looking",
+                        "searchInvestigator": "$iid",
+                        "searchSource": "$source",
+                        "searchTarget": {
+                          "tag": "EncounterDeckTarget",
+                          "contents": []
+                        },
+                        "searchZones": [
+                          [
+                            {
+                              "tag": "FromTopOfDeck",
+                              "contents": 2
+                            },
+                            "PutBackInAnyOrder"
+                          ]
+                        ],
+                        "searchMatcher": {
+                          "tag": "BasicCardMatch",
+                          "contents": {
+                            "tag": "AnyCard",
+                            "contents": []
+                          }
+                        },
+                        "searchFoundStrategy": {
+                          "tag": "DeferSearchedToTarget",
+                          "contents": [
+                            "$target",
+                            "IsNotDraw"
+                          ]
+                        }
+                      }
+                    },
+                    "on": "SearchFound",
+                    "steps": [
+                      {
+                        "let": "iid",
+                        "be": "$0"
+                      },
+                      {
+                        "chooseFrom": {
+                          "over": "$3",
+                          "kind": "card",
+                          "focus": true,
+                          "bind": "card",
+                          "optional": true,
+                          "declineLabel": "Return both to the top",
+                          "steps": [
+                            {
+                              "push": {
+                                "tag": "ObtainCard",
+                                "contents": "$card"
+                              }
+                            },
+                            {
+                              "push": {
+                                "tag": "PutCardOnBottomOfDeck",
+                                "contents": [
+                                  "$iid",
+                                  {
+                                    "tag": "EncounterDeck",
+                                    "contents": []
+                                  },
+                                  "$card"
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "_elderSign": 0,
+          "_elderSignSteps": [
+            {
+              "chooseFrom": {
+                "query": {
+                  "kind": "treachery",
+                  "matcher": {
+                    "tag": "TreacheryMatches",
+                    "contents": [
+                      {
+                        "tag": "TreacheryInThreatAreaOf",
+                        "contents": {
+                          "tag": "InvestigatorAt",
+                          "contents": {
+                            "tag": "LocationWithInvestigator",
+                            "contents": {
+                              "tag": "InvestigatorWithId",
+                              "contents": "$iid"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "tag": "TreacheryIsNonWeakness",
+                        "contents": []
+                      }
+                    ]
+                  }
+                },
+                "bind": "treachery",
+                "steps": [
+                  {
+                    "discardCard": {
+                      "target": {
+                        "tag": "TreacheryTarget",
+                        "contents": "$treachery"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "_signatures": [
+            "*6a4fca38d4f140cf854415adb07f37890",
+            "*4b3bb0d8920745039842172a59d802d60"
+          ]
+        },
+        "classSymbols": [
+          "Seeker"
+        ]
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1778580732/AH_LCG/Seeker_004.DaisyWalker_front_original.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*6a4fca38d4f140cf854415adb07f37890",
+        "art": "*6a4fca38d4f140cf854415adb07f37890",
+        "cardType": "AssetType",
+        "name": {
+          "title": "Daisy's Tote Bag",
+          "subtitle": null
+        },
+        "cardTraits": [
+          "Item"
+        ],
+        "skills": [
+          {
+            "tag": "SkillIcon",
+            "contents": "SkillWillpower"
+          },
+          {
+            "tag": "SkillIcon",
+            "contents": "SkillIntellect"
+          },
+          {
+            "tag": "WildIcon",
+            "contents": []
+          }
+        ],
+        "keywords": [],
+        "unique": false,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "6a4fca38-d4f1-40cf-8544-15adb07f3789",
+          "number": "5",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "_abilities": [
+            {
+              "tooltip": "Exhaust and spend 1 book: the investigator testing a non-weakness treachery at your location gets +2 skill value.",
+              "type": {
+                "tag": "FastAbility'",
+                "cost": {
+                  "tag": "Costs",
+                  "contents": [
+                    {
+                      "tag": "ExhaustCost",
+                      "contents": {
+                        "tag": "AssetTarget",
+                        "contents": "$id"
+                      }
+                    },
+                    {
+                      "tag": "UseCost",
+                      "contents": [
+                        {
+                          "tag": "AssetWithId",
+                          "contents": "$id"
+                        },
+                        "Book",
+                        1
+                      ]
+                    }
+                  ]
+                },
+                "actions": []
+              },
+              "criteria": {
+                "tag": "Criteria",
+                "contents": [
+                  {
+                    "tag": "ControlsThis",
+                    "contents": []
+                  },
+                  {
+                    "tag": "DuringSkillTest",
+                    "contents": {
+                      "tag": "SkillTestMatches",
+                      "contents": [
+                        {
+                          "tag": "SkillTestOnTreachery",
+                          "contents": {
+                            "tag": "TreacheryIsNonWeakness",
+                            "contents": []
+                          }
+                        },
+                        {
+                          "tag": "SkillTestOfInvestigator",
+                          "contents": {
+                            "tag": "InvestigatorAt",
+                            "contents": {
+                              "tag": "LocationWithInvestigator",
+                              "contents": {
+                                "tag": "You",
+                                "contents": []
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "steps": [
+                {
+                  "let": "tester",
+                  "be": {
+                    "skillTest": "investigator"
+                  }
+                },
+                {
+                  "modify": {
+                    "target": {
+                      "tag": "InvestigatorTarget",
+                      "contents": "$tester"
+                    },
+                    "modifiers": [
+                      {
+                        "tag": "AnySkillValue",
+                        "contents": 2
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tooltip": "Replenish 1 book token on Daisy's Tote Bag and ready it.",
+              "type": {
+                "tag": "ActionAbility",
+                "actions": [],
+                "cost": {
+                  "tag": "ActionCost",
+                  "contents": 1
+                }
+              },
+              "criteria": {
+                "tag": "ControlsThis",
+                "contents": []
+              },
+              "steps": [
+                {
+                  "when": {
+                    "kind": "asset",
+                    "matcher": {
+                      "tag": "AssetMatches",
+                      "contents": [
+                        {
+                          "tag": "AssetWithId",
+                          "contents": "$id"
+                        },
+                        {
+                          "tag": "AssetWithTokens",
+                          "contents": [
+                            {
+                              "tag": "LessThan",
+                              "contents": {
+                                "tag": "Static",
+                                "contents": 3
+                              }
+                            },
+                            "Book"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "push": {
+                        "tag": "AddUses",
+                        "contents": [
+                          "$source",
+                          "$id",
+                          "Book",
+                          1
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "ready": {}
+                }
+              ]
+            }
+          ]
+        },
+        "classSymbols": [
+          "Neutral"
+        ],
+        "cost": {
+          "tag": "StaticCost",
+          "contents": 3
+        },
+        "deckRestrictions": [
+          {
+            "tag": "Signature",
+            "contents": "*7b48d82900954b3ea2c38fa609d111e20"
+          }
+        ],
+        "uses": {
+          "type": "Book",
+          "amount": 3
+        }
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1763415121/Return_to_Night_of_the_Zealot_Custom_Investigator_Expansion/005.DaisysToteBag_front.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*4b3bb0d8920745039842172a59d802d60",
+        "art": "*4b3bb0d8920745039842172a59d802d60",
+        "cardType": "AssetType",
+        "name": {
+          "title": "The Necronomicon",
+          "subtitle": "John Dee Translation"
+        },
+        "cardTraits": [
+          "Item",
+          "Tome",
+          "Cursed"
+        ],
+        "skills": [],
+        "keywords": [],
+        "unique": false,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "4b3bb0d8-9207-4503-9842-172a59d802d6",
+          "number": "6",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "_revelationPlacement": "threatArea",
+          "_onRevelation": [
+            {
+              "push": {
+                "tag": "PlaceTokens",
+                "contents": [
+                  "$source",
+                  "$target",
+                  "Horror",
+                  3
+                ]
+              }
+            }
+          ],
+          "_modifiers": [
+            {
+              "kind": "asset",
+              "matcher": {
+                "tag": "AssetMatches",
+                "contents": [
+                  {
+                    "tag": "AssetWithId",
+                    "contents": "$id"
+                  },
+                  {
+                    "tag": "AssetWithTokens",
+                    "contents": [
+                      {
+                        "tag": "GreaterThan",
+                        "contents": {
+                          "tag": "Static",
+                          "contents": 0
+                        }
+                      },
+                      "Horror"
+                    ]
+                  }
+                ]
+              },
+              "modifiers": [
+                {
+                  "tag": "CannotLeavePlay",
+                  "contents": []
+                }
+              ]
+            }
+          ],
+          "_abilities": [
+            {
+              "tooltip": "The first time you draw an encounter card each round: move 1 horror to Daisy Walker, or draw an additional encounter card.",
+              "type": {
+                "tag": "ForcedAbility",
+                "window": {
+                  "tag": "DrawCard",
+                  "contents": [
+                    "After",
+                    {
+                      "tag": "InvestigatorWithId",
+                      "contents": "$owner"
+                    },
+                    {
+                      "tag": "BasicCardMatch",
+                      "contents": {
+                        "tag": "IsEncounterCard",
+                        "contents": []
+                      }
+                    },
+                    {
+                      "tag": "EncounterDeck",
+                      "contents": []
+                    }
+                  ]
+                }
+              },
+              "limit": {
+                "tag": "PlayerLimit",
+                "contents": [
+                  "PerRound",
+                  1
+                ]
+              },
+              "steps": [
+                {
+                  "choose": {
+                    "options": [
+                      {
+                        "label": "Move 1 horror from The Necronomicon to Daisy Walker",
+                        "steps": [
+                          {
+                            "push": {
+                              "tag": "MoveTokens",
+                              "contents": [
+                                "$source",
+                                "$source",
+                                {
+                                  "tag": "InvestigatorTarget",
+                                  "contents": "$owner"
+                                },
+                                "Horror",
+                                1
+                              ]
+                            }
+                          },
+                          {
+                            "when": {
+                              "kind": "asset",
+                              "matcher": {
+                                "tag": "AssetMatches",
+                                "contents": [
+                                  {
+                                    "tag": "AssetWithId",
+                                    "contents": "$id"
+                                  },
+                                  {
+                                    "tag": "AssetWithTokens",
+                                    "contents": [
+                                      {
+                                        "tag": "EqualTo",
+                                        "contents": {
+                                          "tag": "Static",
+                                          "contents": 1
+                                        }
+                                      },
+                                      "Horror"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "then": [
+                              {
+                                "discardCard": {
+                                  "target": "$target"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Draw an additional encounter card",
+                        "steps": [
+                          {
+                            "draw": {
+                              "deck": "encounter",
+                              "iid": "$owner"
+                            }
+                          },
+                          {
+                            "push": {
+                              "tag": "RemoveTokens",
+                              "contents": [
+                                "$source",
+                                "$target",
+                                "Horror",
+                                1
+                              ]
+                            }
+                          },
+                          {
+                            "when": {
+                              "kind": "asset",
+                              "matcher": {
+                                "tag": "AssetMatches",
+                                "contents": [
+                                  {
+                                    "tag": "AssetWithId",
+                                    "contents": "$id"
+                                  },
+                                  {
+                                    "tag": "AssetWithTokens",
+                                    "contents": [
+                                      {
+                                        "tag": "EqualTo",
+                                        "contents": {
+                                          "tag": "Static",
+                                          "contents": 1
+                                        }
+                                      },
+                                      "Horror"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "then": [
+                              {
+                                "discardCard": {
+                                  "target": "$target"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "cardSubType": "Weakness",
+        "slots": [
+          "HandSlot"
+        ],
+        "deckRestrictions": [
+          {
+            "tag": "Signature",
+            "contents": "*7b48d82900954b3ea2c38fa609d111e20"
+          }
+        ],
+        "revelation": "IsRevelation"
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1765534819/Return_to_Night_of_the_Zealot_Custom_Investigator_Expansion/006.TheNecronomicon_front.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*48bd399e1d7d4b958a881145f95eae140",
+        "art": "*48bd399e1d7d4b958a881145f95eae140",
+        "cardType": "InvestigatorType",
+        "name": {
+          "title": "\"Skids\" O'Toole",
+          "subtitle": "The Ex-Con"
+        },
+        "cardTraits": [
+          "Criminal"
+        ],
+        "skills": [],
+        "keywords": [],
+        "unique": true,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "48bd399e-1d7d-4b95-8a88-1145f95eae14",
+          "number": "7",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "health": 8,
+          "sanity": 6,
+          "willpower": 2,
+          "intellect": 2,
+          "combat": 3,
+          "agility": 5,
+          "backArt": "https://res.cloudinary.com/dxdnloddw/image/upload/v1778580729/AH_LCG/Rogue_007.SkidsOToole_back_original.jpg",
+          "_modifiers": [
+            {
+              "kind": "investigator",
+              "matcher": {
+                "tag": "InvestigatorWithId",
+                "contents": "$id"
+              },
+              "modifiers": [
+                {
+                  "tag": "GiveAdditionalAction",
+                  "contents": {
+                    "label": "\"Skids\" O'Toole",
+                    "source": "$source",
+                    "kind": {
+                      "tag": "PlayCardRestrictedAdditionalAction",
+                      "contents": {
+                        "tag": "BasicCardMatch",
+                        "contents": {
+                          "tag": "CardWithCostAtLeast",
+                          "contents": 3
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "_elderSign": 1,
+          "_elderSignSteps": [
+            {
+              "let": "n",
+              "be": {
+                "min": [
+                  {
+                    "count": {
+                      "get": "InvestigatorActionsTaken",
+                      "kind": "investigator",
+                      "of": "$iid"
+                    }
+                  },
+                  4
+                ]
+              }
+            },
+            {
+              "when": {
+                "ne": [
+                  "$n",
+                  0
+                ]
+              },
+              "then": [
+                {
+                  "push": {
+                    "tag": "TakeResources",
+                    "contents": [
+                      "$iid",
+                      "$n",
+                      "$source",
+                      false
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "_signatures": [
+            "*c9e03ddef06748a58063839f82167d9c0",
+            "*45be196b4f6a494d85c93b2521e7d5570"
+          ]
+        },
+        "classSymbols": [
+          "Rogue"
+        ]
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1778580726/AH_LCG/Rogue_007.SkidsOToole_front_original.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*c9e03ddef06748a58063839f82167d9c0",
+        "art": "*c9e03ddef06748a58063839f82167d9c0",
+        "cardType": "AssetType",
+        "name": {
+          "title": "On the Lam",
+          "subtitle": null
+        },
+        "cardTraits": [
+          "Talent",
+          "Illicit"
+        ],
+        "skills": [
+          {
+            "tag": "SkillIcon",
+            "contents": "SkillWillpower"
+          },
+          {
+            "tag": "SkillIcon",
+            "contents": "SkillAgility"
+          },
+          {
+            "tag": "WildIcon",
+            "contents": []
+          }
+        ],
+        "keywords": [],
+        "unique": false,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "c9e03dde-f067-48a5-8063-839f82167d9c",
+          "number": "8",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "_abilities": [
+            {
+              "tooltip": "At the end of your turn: place 1 resource here for each action you spent beyond 3 this round.",
+              "type": {
+                "tag": "ForcedAbility",
+                "window": {
+                  "tag": "TurnEnds",
+                  "contents": [
+                    "When",
+                    {
+                      "tag": "You",
+                      "contents": []
+                    }
+                  ]
+                }
+              },
+              "criteria": {
+                "tag": "ControlsThis",
+                "contents": []
+              },
+              "steps": [
+                {
+                  "let": "n",
+                  "be": {
+                    "max": [
+                      {
+                        "subtract": [
+                          {
+                            "count": {
+                              "get": "InvestigatorActionsTaken",
+                              "kind": "investigator",
+                              "of": "$iid"
+                            }
+                          },
+                          3
+                        ]
+                      },
+                      0
+                    ]
+                  }
+                },
+                {
+                  "when": {
+                    "ne": [
+                      "$n",
+                      0
+                    ]
+                  },
+                  "then": [
+                    {
+                      "push": {
+                        "tag": "PlaceTokens",
+                        "contents": [
+                          "$source",
+                          "$target",
+                          "Resource",
+                          "$n"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "_modifiers": [
+            {
+              "kind": "investigator",
+              "matcher": {
+                "tag": "InvestigatorWithId",
+                "contents": "$controller"
+              },
+              "modifiers": [
+                {
+                  "tag": "CanSpendUsesAsResourceOnCardFromInvestigator",
+                  "contents": [
+                    "$id",
+                    "Resource",
+                    {
+                      "tag": "InvestigatorWithId",
+                      "contents": "$controller"
+                    },
+                    {
+                      "tag": "AnyCard",
+                      "contents": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "classSymbols": [
+          "Neutral"
+        ],
+        "cost": {
+          "tag": "StaticCost",
+          "contents": 3
+        },
+        "deckRestrictions": [
+          {
+            "tag": "Signature",
+            "contents": "*48bd399e1d7d4b958a881145f95eae140"
+          }
+        ]
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1763415108/Return_to_Night_of_the_Zealot_Custom_Investigator_Expansion/008.OntheLam_front.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*45be196b4f6a494d85c93b2521e7d5570",
+        "art": "*45be196b4f6a494d85c93b2521e7d5570",
+        "cardType": "PlayerTreacheryType",
+        "name": {
+          "title": "Hospital Debts",
+          "subtitle": null
+        },
+        "cardTraits": [
+          "Task"
+        ],
+        "skills": [],
+        "keywords": [],
+        "unique": false,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "45be196b-4f6a-494d-85c9-3b2521e7d557",
+          "number": "9",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "_revelationPlacement": "threatArea",
+          "_onRevelation": [
+            {
+              "push": {
+                "tag": "PlaceTokens",
+                "contents": [
+                  "$source",
+                  "$target",
+                  "Resource",
+                  3
+                ]
+              }
+            }
+          ],
+          "_modifiers": [
+            {
+              "kind": "treachery",
+              "matcher": {
+                "tag": "TreacheryWithId",
+                "contents": "$id"
+              },
+              "modifiers": [
+                {
+                  "tag": "CannotLeavePlay",
+                  "contents": []
+                }
+              ],
+              "if": {
+                "criteria": {
+                  "tag": "ResourcesOnThis",
+                  "contents": {
+                    "tag": "AtLeast",
+                    "contents": {
+                      "tag": "Static",
+                      "contents": 1
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "kind": "investigator",
+              "matcher": {
+                "tag": "HasMatchingTreachery",
+                "contents": {
+                  "tag": "TreacheryWithId",
+                  "contents": "$id"
+                }
+              },
+              "modifiers": [
+                {
+                  "tag": "IncreaseCostOf",
+                  "contents": [
+                    {
+                      "tag": "BasicCardMatch",
+                      "contents": {
+                        "tag": "AnyCard",
+                        "contents": []
+                      }
+                    },
+                    2
+                  ]
+                }
+              ],
+              "if": {
+                "criteria": {
+                  "tag": "ResourcesOnThis",
+                  "contents": {
+                    "tag": "AtLeast",
+                    "contents": {
+                      "tag": "Static",
+                      "contents": 1
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "_abilities": [
+            {
+              "tooltip": "When you would play a card: increase its cost by 2 and remove 1 resource from Hospital Debts.",
+              "type": {
+                "tag": "ForcedAbility",
+                "window": {
+                  "tag": "PlayCard",
+                  "contents": [
+                    "When",
+                    {
+                      "tag": "You",
+                      "contents": []
+                    },
+                    {
+                      "tag": "BasicCardMatch",
+                      "contents": {
+                        "tag": "AnyCard",
+                        "contents": []
+                      }
+                    }
+                  ]
+                }
+              },
+              "criteria": {
+                "tag": "Criteria",
+                "contents": [
+                  {
+                    "tag": "InThreatAreaOf",
+                    "contents": {
+                      "tag": "You",
+                      "contents": []
+                    }
+                  },
+                  {
+                    "tag": "ResourcesOnThis",
+                    "contents": {
+                      "tag": "AtLeast",
+                      "contents": {
+                        "tag": "Static",
+                        "contents": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              "steps": [
+                {
+                  "when": {
+                    "criteria": {
+                      "tag": "ResourcesOnThis",
+                      "contents": {
+                        "tag": "EqualTo",
+                        "contents": {
+                          "tag": "Static",
+                          "contents": 1
+                        }
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "push": {
+                        "tag": "RemoveTokens",
+                        "contents": [
+                          "$source",
+                          "$target",
+                          "Resource",
+                          1
+                        ]
+                      }
+                    },
+                    {
+                      "discardCard": {
+                        "target": "$target"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "criteria": {
+                      "tag": "ResourcesOnThis",
+                      "contents": {
+                        "tag": "GreaterThan",
+                        "contents": {
+                          "tag": "Static",
+                          "contents": 1
+                        }
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "push": {
+                        "tag": "RemoveTokens",
+                        "contents": [
+                          "$source",
+                          "$target",
+                          "Resource",
+                          1
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "cardSubType": "Weakness",
+        "deckRestrictions": [
+          {
+            "tag": "Signature",
+            "contents": "*48bd399e1d7d4b958a881145f95eae140"
+          }
+        ],
+        "revelation": "IsRevelation"
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1765534817/Return_to_Night_of_the_Zealot_Custom_Investigator_Expansion/009.HospitalDebts_front.jpg"
+    },
+    {
+      "def": {
+        "cardCode": "*43c6f1af6bfc40f6af6ca597816517b10",
+        "art": "*43c6f1af6bfc40f6af6ca597816517b10",
+        "cardType": "InvestigatorType",
+        "name": {
+          "title": "Agnes Baker",
+          "subtitle": "The Waitress"
+        },
+        "cardTraits": [
+          "Sorcerer"
+        ],
+        "skills": [],
+        "keywords": [],
+        "unique": true,
+        "permanent": false,
+        "doubleSided": false,
+        "meta": {
+          "arkhamBuildCode": "43c6f1af-6bfc-40f6-af6c-a597816517b1",
+          "number": "10",
+          "set": "Unofficial Return to Night of the Zealot - Investigator Expansion",
+          "health": 5,
+          "sanity": 9,
+          "willpower": 5,
+          "intellect": 2,
+          "combat": 2,
+          "agility": 3,
+          "backArt": "https://res.cloudinary.com/dxdnloddw/image/upload/v1778580723/AH_LCG/Mystic_010.AgnesBaker_back_original.jpg",
+          "_abilities": [
+            {
+              "tooltip": "When a chaos token is sealed on a card you control: deal 1 damage (negative modifier) or discover 1 clue (positive or neutral).",
+              "type": {
+                "tag": "ReactionAbility",
+                "window": {
+                  "tag": "ChaosTokenSealedOnTarget",
+                  "contents": [
+                    "When",
+                    {
+                      "tag": "TargetControlledBy",
+                      "contents": {
+                        "tag": "You",
+                        "contents": []
+                      }
+                    },
+                    {
+                      "tag": "AnyChaosToken",
+                      "contents": []
+                    }
+                  ]
+                },
+                "cost": {
+                  "tag": "Free",
+                  "contents": []
+                },
+                "actions": []
+              },
+              "criteria": {
+                "tag": "Self",
+                "contents": []
+              },
+              "limit": {
+                "tag": "PlayerLimit",
+                "contents": [
+                  "PerRound",
+                  1
+                ]
+              },
+              "steps": [
+                {
+                  "let": "tokenId",
+                  "be": {
+                    "field": "chaosTokenId",
+                    "of": "$w1"
+                  }
+                },
+                {
+                  "case": [
+                    {
+                      "if": {
+                        "kind": "chaosToken",
+                        "matcher": {
+                          "tag": "IncludeSealed",
+                          "contents": {
+                            "tag": "ChaosTokenMatches",
+                            "contents": [
+                              {
+                                "tag": "ChaosTokenIs",
+                                "contents": "$tokenId"
+                              },
+                              {
+                                "tag": "WithNegativeModifierFor",
+                                "contents": {
+                                  "tag": "InvestigatorWithId",
+                                  "contents": "$iid"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "steps": [
+                        {
+                          "chooseFrom": {
+                            "query": {
+                              "kind": "enemy",
+                              "matcher": {
+                                "tag": "EnemyMatchAll",
+                                "contents": [
+                                  {
+                                    "tag": "EnemyAt",
+                                    "contents": {
+                                      "tag": "LocationWithInvestigator",
+                                      "contents": {
+                                        "tag": "InvestigatorWithId",
+                                        "contents": "$iid"
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "tag": "EnemyCanBeDamagedBySource",
+                                    "contents": "$source"
+                                  }
+                                ]
+                              }
+                            },
+                            "bind": "enemy",
+                            "steps": [
+                              {
+                                "push": {
+                                  "tag": "DealDamage",
+                                  "contents": [
+                                    {
+                                      "tag": "EnemyTarget",
+                                      "contents": "$enemy"
+                                    },
+                                    {
+                                      "damageAssignmentSource": "$source",
+                                      "damageAssignmentAmount": 1,
+                                      "damageAssignmentDamageEffect": "NonAttackDamageEffect",
+                                      "damageAssignmentDirect": false,
+                                      "damageAssignmentDelayed": false
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "if": {
+                        "kind": "chaosToken",
+                        "matcher": {
+                          "tag": "IncludeSealed",
+                          "contents": {
+                            "tag": "ChaosTokenMatches",
+                            "contents": [
+                              {
+                                "tag": "ChaosTokenIs",
+                                "contents": "$tokenId"
+                              },
+                              {
+                                "tag": "ChaosTokenFaceIsNot",
+                                "contents": "AutoFail"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "steps": [
+                        {
+                          "discover": {}
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "_elderSign": 1,
+          "_elderSignSteps": [
+            {
+              "choose": {
+                "options": [
+                  {
+                    "query": {
+                      "kind": "asset",
+                      "matcher": {
+                        "tag": "AssetMatches",
+                        "contents": [
+                          {
+                            "tag": "AssetControlledBy",
+                            "contents": {
+                              "tag": "InvestigatorWithId",
+                              "contents": "$iid"
+                            }
+                          },
+                          {
+                            "tag": "AssetWithSealedChaosTokens",
+                            "contents": [
+                              1,
+                              {
+                                "tag": "AnyChaosToken",
+                                "contents": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "bind": "card",
+                    "steps": [
+                      {
+                        "chooseFrom": {
+                          "query": {
+                            "kind": "chaosToken",
+                            "matcher": {
+                              "tag": "SealedOnAsset",
+                              "contents": [
+                                {
+                                  "tag": "AssetWithId",
+                                  "contents": "$card"
+                                },
+                                {
+                                  "tag": "AnyChaosToken",
+                                  "contents": []
+                                }
+                              ]
+                            }
+                          },
+                          "bind": "released",
+                          "steps": [
+                            {
+                              "push": {
+                                "tag": "UnsealChaosToken",
+                                "contents": "$released"
+                              }
+                            },
+                            {
+                              "chooseFrom": {
+                                "query": {
+                                  "kind": "chaosToken",
+                                  "matcher": {
+                                    "tag": "OnlyInBag",
+                                    "contents": {
+                                      "tag": "ChaosTokenFaceIsNot",
+                                      "contents": "AutoFail"
+                                    }
+                                  }
+                                },
+                                "bind": "sealing",
+                                "optional": true,
+                                "declineLabel": "Do not seal a token",
+                                "steps": [
+                                  {
+                                    "push": {
+                                      "tag": "SealChaosToken",
+                                      "contents": "$sealing"
+                                    }
+                                  },
+                                  {
+                                    "push": {
+                                      "tag": "SealedChaosToken",
+                                      "contents": [
+                                        "$sealing",
+                                        "$iid",
+                                        {
+                                          "tag": "AssetTarget",
+                                          "contents": "$card"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Release a token sealed on Agnes Baker",
+                    "criteria": {
+                      "kind": "chaosToken",
+                      "matcher": {
+                        "tag": "SealedOnInvestigator",
+                        "contents": [
+                          {
+                            "tag": "InvestigatorWithId",
+                            "contents": "$iid"
+                          },
+                          {
+                            "tag": "AnyChaosToken",
+                            "contents": []
+                          }
+                        ]
+                      }
+                    },
+                    "steps": [
+                      {
+                        "chooseFrom": {
+                          "query": {
+                            "kind": "chaosToken",
+                            "matcher": {
+                              "tag": "SealedOnInvestigator",
+                              "contents": [
+                                {
+                                  "tag": "InvestigatorWithId",
+                                  "contents": "$iid"
+                                },
+                                {
+                                  "tag": "AnyChaosToken",
+                                  "contents": []
+                                }
+                              ]
+                            }
+                          },
+                          "bind": "released",
+                          "steps": [
+                            {
+                              "push": {
+                                "tag": "UnsealChaosToken",
+                                "contents": "$released"
+                              }
+                            },
+                            {
+                              "chooseFrom": {
+                                "query": {
+                                  "kind": "chaosToken",
+                                  "matcher": {
+                                    "tag": "OnlyInBag",
+                                    "contents": {
+                                      "tag": "ChaosTokenFaceIsNot",
+                                      "contents": "AutoFail"
+                                    }
+                                  }
+                                },
+                                "bind": "sealing",
+                                "optional": true,
+                                "declineLabel": "Do not seal a token",
+                                "steps": [
+                                  {
+                                    "push": {
+                                      "tag": "SealChaosToken",
+                                      "contents": "$sealing"
+                                    }
+                                  },
+                                  {
+                                    "push": {
+                                      "tag": "SealedChaosToken",
+                                      "contents": [
+                                        "$sealing",
+                                        "$iid",
+                                        {
+                                          "tag": "InvestigatorTarget",
+                                          "contents": "$iid"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Do not release a token",
+                    "steps": []
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "classSymbols": [
+          "Mystic"
+        ]
+      },
+      "art": "https://res.cloudinary.com/dxdnloddw/image/upload/v1778580721/AH_LCG/Mystic_010.AgnesBaker_front_original.jpg"
+    }
+  ]
+}

@@ -234,6 +234,15 @@ const ADDABLE = (Object.keys(KIND_LABELS) as StepKind[])
 const set = (index: number, step: any) =>
   emit('update:modelValue', steps.value.map((s, i) => (i === index ? step : s)))
 
+/* Sets a key on a step's payload, or drops it for `undefined` -- the engine reads
+ * a missing key as the default, and a written `null` is never that. */
+const withKey = (payload: any, key: string, value: unknown) => {
+  const next = { ...(payload ?? {}) }
+  if (value === undefined) delete next[key]
+  else next[key] = value
+  return next
+}
+
 const add = (kind: StepKind) => emit('update:modelValue', [...steps.value, blankStep(kind)])
 
 /* Swapping between the two is only ever moving the condition between keys, and
@@ -1563,6 +1572,11 @@ const removeOption = (step: any, index: number, at: number) =>
           :modelValue="step.draw?.amount ?? 1"
           @update:modelValue="set(index, { ...step, draw: { ...step.draw, amount: $event } })"
         />
+        <BoolField
+          label="from the encounter deck"
+          :modelValue="step.draw?.deck === 'encounter'"
+          @update:modelValue="set(index, { ...step, draw: withKey(step.draw, 'deck', $event ? 'encounter' : undefined) })"
+        />
         <p class="hint">Nothing is drawn when this works out to zero or less.</p>
       </template>
 
@@ -1665,6 +1679,17 @@ const removeOption = (step: any, index: number, at: number) =>
             :bindings="scopeFor(index)"
             :modelValue="step.chooseFrom?.over"
             @update:modelValue="set(index, { ...step, chooseFrom: { ...step.chooseFrom, over: $event } })"
+          />
+          <BoolField
+            label="the list holds cards"
+            :modelValue="step.chooseFrom?.kind === 'card'"
+            @update:modelValue="set(index, { ...step, chooseFrom: withKey(step.chooseFrom, 'kind', $event ? 'card' : undefined) })"
+          />
+          <BoolField
+            v-if="step.chooseFrom?.kind === 'card'"
+            label="show the cards while choosing"
+            :modelValue="!!step.chooseFrom?.focus"
+            @update:modelValue="set(index, { ...step, chooseFrom: withKey(step.chooseFrom, 'focus', $event || undefined) })"
           />
           <label>
             Label each option

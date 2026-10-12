@@ -44,7 +44,7 @@ import Arkham.Helpers.Customization (
 import Arkham.Helpers.FetchCard (findCardFace)
 import Arkham.Helpers.Investigator (getCanDiscoverClues)
 import Arkham.Helpers.Location (Locateable, getLocationOf)
-import Arkham.Helpers.Message (drawCards)
+import Arkham.Helpers.Message (drawCards, drawEncounterCards)
 import Arkham.Helpers.Modifiers (
   ModifierType (ReduceCostOf),
   toModifiers,
@@ -1340,6 +1340,9 @@ runUseAbility env spec = case spec of
 
 @amount@ is an expression, so "one card for each unique icon committed" is the
 count that expression works out to rather than a number written in advance.
+
+From your own deck unless @deck@ says @"encounter"@: "draw an additional
+encounter card" is a draw like any other, revelation and all.
 -}
 runDraw :: (HasGameLogger m, ReverseQueue m) => Env -> Value -> m ()
 runDraw env spec = case spec of
@@ -1347,7 +1350,10 @@ runDraw env spec = case spec of
     iid <- maybe (stepInvestigator env) pure (KeyMap.lookup "iid" o >>= decodeWith env)
     let source = fromMaybe GameSource (KeyMap.lookup "source" env >>= parseMaybe parseJSON)
     n <- maybe (pure 1) (exprInt env) (KeyMap.lookup "amount" o)
-    when (n > 0) $ push $ drawCards iid source n
+    let fromEncounterDeck = KeyMap.lookup "deck" o == Just (String "encounter")
+    when (n > 0)
+      $ push
+      $ if fromEncounterDeck then drawEncounterCards iid source n else drawCards iid source n
   _ -> pure ()
 
 {- | One option per thing the matcher finds, with the found thing bound so the
@@ -1370,9 +1376,23 @@ runChooseFrom env spec = case spec of
         Just (String n) -> Key.fromText n
         _ -> "chosen"
       steps = maybe [] subSteps (KeyMap.lookup "steps" o)
+      {- A list in hand says what it holds with @kind@ beside @over@, since there
+      is no query to read it off: the cards a search handed back are cards, and
+      are offered as such. -}
       kind = case KeyMap.lookup "query" o of
         Just (Object q) | Just (String k) <- KeyMap.lookup "kind" q -> k
-        _ -> ""
+        _ -> case KeyMap.lookup "kind" o of
+          Just (String k) -> k
+          _ -> ""
+      {- Cards that are in no zone anyone can see -- the top of a deck being
+      looked at -- have to be put in front of the player to be chosen between.
+      Asked for with @focus@, and only meaningful for cards. -}
+      focused =
+        [ card
+        | kind == "card"
+        , KeyMap.lookup "focus" o == Just (Bool True)
+        , card <- mapMaybe (parseMaybe (parseJSON @Card)) (fromMaybe [] found)
+        ]
     -- Shown as the thing itself. Three cards all labelled "Choose" is no
     -- choice at all, the same way two events both reading "Play an event"
     -- were not.
@@ -1389,7 +1409,10 @@ runChooseFrom env spec = case spec of
       declined =
         [ Label (textField env o "declineLabel" "Do not") [] | KeyMap.lookup "optional" o == Just (Bool True)
         ]
-    unless (null labels && null declined) $ Prompt.chooseOne iid (labels <> declined)
+    unless (null labels && null declined) do
+      unless (null focused) $ push $ FocusCards focused
+      Prompt.chooseOne iid (labels <> declined)
+      unless (null focused) $ push UnfocusCards
   _ -> pure ()
 
 {- | An option's label when nothing else names it: the value, when the value is

@@ -6,6 +6,7 @@ export const TOKENS = [
   "AlarmLevel",
   "Ammo",
   "Antiquity",
+  "Book",
   "Bounty",
   "Brilliance",
   "Chance",

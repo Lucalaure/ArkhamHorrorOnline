@@ -64,7 +64,7 @@ const ACTIONS = ['Fight', 'Evade', 'Investigate', 'Move', 'Parley', 'Resign', 'D
 
 const CLASSES = ['Guardian', 'Seeker', 'Rogue', 'Mystic', 'Survivor', 'Neutral']
 const SLOTS = ['HandSlot', 'BodySlot', 'AllySlot', 'AccessorySlot', 'ArcaneSlot', 'TarotSlot', 'HeadSlot']
-const USE_TYPES = ['Ammo', 'Charge', 'Secret', 'Supply', 'Offering', 'Resource', 'Key', 'Evidence']
+const USE_TYPES = ['Ammo', 'Book', 'Charge', 'Secret', 'Supply', 'Offering', 'Resource', 'Key', 'Evidence']
 /* An investigator records stats rather than icons: the same control, without
  * wild, since there is no such stat. */
 const STATS = [

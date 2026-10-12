@@ -18,6 +18,8 @@ historyMatches :: HasGame m => Matcher.HistoryMatcher -> History -> m Bool
 historyMatches = \case
   Matcher.DefeatedEnemiesWithTotalHealth vMatcher ->
     (`gameValueMatches` vMatcher) . sum . map defeatedEnemyHealth . historyEnemiesDefeated
+  Matcher.DefeatedEnemiesCount vMatcher ->
+    (`gameValueMatches` vMatcher) . length . historyEnemiesDefeated
   Matcher.DefeatedEnemyWithTraitAt trait lid ->
     pure
       . any

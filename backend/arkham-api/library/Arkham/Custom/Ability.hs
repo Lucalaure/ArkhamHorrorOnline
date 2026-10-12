@@ -42,7 +42,8 @@ Both run the same small step language:
 * @attack@ -- an enemy attacks an investigator.
 * @ready@ -- ready a card.
 * @takeAction@ -- take an immediate action as if it were your turn.
-* @draw@ -- draw cards, however many an expression works out to.
+* @draw@ -- draw cards, however many an expression works out to, from your deck
+  or (@"deck": "encounter"@) the encounter deck.
 * @gather@ -- shuffle a card from an encounter set into a deck.
 * @customize@ -- mark a checkbox on a customizable card you own.
 * @useAbility@ -- resolve one of this card's own abilities, cost and all.
@@ -56,7 +57,9 @@ Both run the same small step language:
 * @setAside@ -- make copies of named cards and set them aside, out of play.
 * @cancelBatch@ -- stop what a @would@ window is about to do, for "instead".
 
-@forEach@ and @chooseFrom@ walk a @query@ or, with @over@, a list already bound. A @query@ step
+@forEach@ and @chooseFrom@ walk a @query@ or, with @over@, a list already bound;
+a @chooseFrom@ over cards says so with @"kind": "card"@, and @"focus": true@
+shows them while the choice is made. A @query@ step
 takes @"mode": "random"@ as well as @first@ and @count@. An @if@ or @when@ reads
 a matcher, a @criteria@, a @{"source", "matches"}@ pair, or an @eq@/@ne@ of two
 expressions. An option of a @choose@ may carry a @query@ of its own, so one

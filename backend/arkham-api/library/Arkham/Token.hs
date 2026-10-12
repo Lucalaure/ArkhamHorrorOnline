@@ -11,6 +11,7 @@ data Token
   | AlarmLevel
   | Ammo
   | Antiquity
+  | Book
   | Bounty
   | Brilliance
   | Chance

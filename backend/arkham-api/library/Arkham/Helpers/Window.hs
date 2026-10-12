@@ -1922,6 +1922,11 @@ windowMatches iid rawSource window'@(windowTiming &&& windowType -> (timing', wT
         Window.ChaosTokenSealedOn who token ->
           andM [matchWho iid who whoMatcher, matchChaosToken who token tokenMatcher]
         _ -> noMatch
+    Matcher.ChaosTokenSealedOnTarget timing targetMatcher tokenMatcher ->
+      guardTiming timing $ \case
+        Window.ChaosTokenSealedOnTarget target token ->
+          andM [targetMatches target targetMatcher, matchChaosToken iid token tokenMatcher]
+        _ -> noMatch
     Matcher.ChaosTokenSealed timing whoMatcher tokenMatcher ->
       guardTiming timing $ \case
         Window.ChaosTokenSealed who token ->

@@ -5570,6 +5570,12 @@ instance Query ChaosTokenMatcher where
         Just s -> do
           bag <- infestationBag <$> getAttrs @Story s
           pure $ map asChaosToken $ allBagTokens bag
+    hasNegativeModifier :: HasGame m => InvestigatorId -> ChaosToken -> m Bool
+    hasNegativeModifier iid' t =
+      getChaosTokenValue iid' t.face () <&> \case
+        ChaosTokenValue _ (NegativeModifier _) -> True
+        ChaosTokenValue _ (DoubleNegativeModifier _) -> True
+        _ -> False
     go :: HasGame m => ChaosTokenMatcher -> ChaosToken -> m Bool
     go = \case
       ChaosTokenIs cid -> pure . (== cid) . chaosTokenId
@@ -5616,10 +5622,9 @@ instance Query ChaosTokenMatcher where
       IsSymbol -> pure . isSymbolChaosToken . chaosTokenFace
       WithNegativeModifier -> \t -> do
         iid' <- toId <$> getActiveInvestigator
-        getChaosTokenValue iid' t.face () <&> \case
-          ChaosTokenValue _ (NegativeModifier _) -> True
-          ChaosTokenValue _ (DoubleNegativeModifier _) -> True
-          _ -> False
+        hasNegativeModifier iid' t
+      WithNegativeModifierFor investigatorMatcher -> \t ->
+        selectOne investigatorMatcher >>= maybe (pure False) (`hasNegativeModifier` t)
       WithNonNegativeModifier -> \t -> do
         iid' <- toId <$> getActiveInvestigator
         ChaosTokenValue _ modifier <- getChaosTokenValue iid' t.face ()

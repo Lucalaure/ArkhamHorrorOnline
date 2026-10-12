@@ -17,6 +17,11 @@ pattern NonSymbol = NotChaosToken IsSymbol
 
 data ChaosTokenMatcher
   = WithNegativeModifier
+  | {- | A negative modifier as this investigator would value the token, rather
+    than the active investigator: "if the token sealed on your card has a
+    negative modifier" is asked of you, whoever's turn it is.
+    -}
+    WithNegativeModifierFor InvestigatorMatcher
   | WithNonNegativeModifier
   | WithAutoFailModifier
   | OnlyInBag ChaosTokenMatcher

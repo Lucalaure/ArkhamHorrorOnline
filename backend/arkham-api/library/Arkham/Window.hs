@@ -446,6 +446,10 @@ data WindowType
     fires for seals onto their assets too.
     -}
     ChaosTokenSealedOn InvestigatorId ChaosToken
+  | {- | Raised on the card the token is sealed ON, whichever card that is and
+    whoever (or whatever) sealed it -- the counterpart of 'ChaosTokenReleased'.
+    -}
+    ChaosTokenSealedOnTarget Target ChaosToken
   | {- | Raised on the card the token was sealed on, whichever card that is: an
     investigator card, but also an enemy, asset, location, treachery or skill.
     -}

@@ -255,6 +255,8 @@ data CardMatcher
   | CardWithOddCost
   | CardWithEvenCost
   | CardWithCost Int
+  | -- | Printed cost of at least this much: "a card that costs 3 or more".
+    CardWithCostAtLeast Int
   | CardWithNonZeroCost
   | CardWithOddSkillIcons
   | CardWithEvenSkillIcons

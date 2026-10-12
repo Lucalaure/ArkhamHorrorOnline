@@ -58,6 +58,7 @@ windowTable =
   , ("ChaosTokenReleasedFrom", ["ChaosTokenReleased"])
   , ("ChaosTokenSealed", ["ChaosTokenSealed"])
   , ("ChaosTokenSealedOn", ["ChaosTokenSealedOn"])
+  , ("ChaosTokenSealedOnTarget", ["ChaosTokenSealedOnTarget"])
   , ("ChosenRandomLocation", ["ChosenRandomLocation"])
   , ("CommittedCard", ["CommittedCard"])
   , ("CommittedCards", ["CommittedCards"])

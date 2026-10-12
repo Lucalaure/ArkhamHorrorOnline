@@ -207,6 +207,11 @@ data WindowMatcher
     'ChaosTokenSealed', which matches on the investigator doing the sealing.
     -}
     ChaosTokenSealedOn Timing Who ChaosTokenMatcher
+  | {- | A token sealed onto any card the target matcher accepts, whoever
+    sealed it: "when a chaos token is sealed on a card you control". The
+    counterpart of 'ChaosTokenReleasedFrom'.
+    -}
+    ChaosTokenSealedOnTarget Timing TargetMatcher ChaosTokenMatcher
   | {- | A token released from an investigator's own card. Releases from any
     other card (an enemy, asset, location, treachery or skill it was sealed on)
     are 'ChaosTokenReleasedFrom'.

@@ -60,6 +60,7 @@ const TOKEN_CONFIG: Partial<Record<Token, { type: string; tooltip?: string }>> =
   LostSoul: { type: 'resource' },
   Overgrowth: { type: 'resource' },
   Bounty: { type: 'resource' },
+  Book: { type: 'resource', tooltip: 'Book' },
   Evidence: { type: 'resource', tooltip: 'Evidence' },
   Warning: { type: 'resource', tooltip: 'Warning' },
   Memory: { type: 'resource', tooltip: 'Memory' },

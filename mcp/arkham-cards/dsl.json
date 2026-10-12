@@ -323,6 +323,8 @@
         "query",
         "bind",
         "steps",
+        "kind",
+        "focus",
         "label",
         "declineLabel",
         "optional"
@@ -641,14 +643,15 @@
       "stepKeys": [],
       "payloadKeys": [
         "iid",
-        "amount"
+        "amount",
+        "deck"
       ],
       "nestedKeys": {},
       "bindingsRead": [
         "source"
       ],
       "valueShape": null,
-      "doc": "Draw cards.\n\n@amount@ is an expression, so \"one card for each unique icon committed\" is the\ncount that expression works out to rather than a number written in advance.",
+      "doc": "Draw cards.\n\n@amount@ is an expression, so \"one card for each unique icon committed\" is the\ncount that expression works out to rather than a number written in advance.\n\nFrom your own deck unless @deck@ says @\"encounter\"@: \"draw an additional\nencounter card\" is a draw like any other, revelation and all.",
       "via": []
     },
     {
@@ -938,6 +941,7 @@
       "optional": [
         "metadata",
         "tooltip",
+        "resultLabel",
         "displayAsAction",
         "displayAs",
         "delayAdditionalCosts",
@@ -951,7 +955,8 @@
         "fightCriteriaOverride",
         "evadeCriteriaOverride",
         "nonBlocking",
-        "blocksIn"
+        "blocksIn",
+        "chaosTokenEffects"
       ]
     },
     "UsedAbility": {
@@ -1809,12 +1814,14 @@
         "gameTurnHistory",
         "gameRoundHistory",
         "gameSettings",
+        "gameRoundCount",
         "gameWindowTick",
         "gameWindowTickStack",
         "gameEntryTicks",
         "gameCustomCards",
         "gameTombstones",
         "gameRetiredInvestigators",
+        "gameCommittedEntities",
         "gameHighlightedCards",
         "gameRetainedQuestion",
         "gameSimultaneousAsks",
@@ -1823,7 +1830,8 @@
         "gameUndoTurnStep",
         "gameUndoPhaseStep",
         "gameUndoRoundStep",
-        "gameLocationOffsets"
+        "gameLocationOffsets",
+        "gameCardPlayStack"
       ]
     },
     "Settings": {
@@ -2138,6 +2146,7 @@
         "locationGroups",
         "grid",
         "deckDiscards",
+        "substitutions",
         "useHardExpertReference",
         "customChaosBags",
         "keys",
