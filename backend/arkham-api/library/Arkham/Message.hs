@@ -61,6 +61,7 @@ import Arkham.Custom.Overlay (DeckOverlay)
 import Arkham.Customization
 import Arkham.DamageEffect
 import Arkham.Debug.CardDestination
+import Arkham.Debug.InvestigatorStat
 import Arkham.Debug.SkillTest
 import Arkham.Deck
 import Arkham.DeckBuilding.Adjustment
@@ -1404,6 +1405,16 @@ data Message
     DebugSealChaosToken ChaosTokenId Target
   | -- Debug: start a real skill test with no card behind it.
     DebugBeginSkillTest DebugSkillTestSpec
+  | -- Debug: overwrite one of an investigator's printed values (health, sanity
+    -- or a skill). Modifiers still apply on top, as they would to the card.
+    DebugSetInvestigatorStat InvestigatorId DebugInvestigatorStat Int
+  | -- Debug: put every printed value back to the investigator card's own.
+    DebugResetInvestigatorStats InvestigatorId
+  | {- | Debug: attach an asset, event, skill or treachery in play to another card
+    on the table. The first target is the card that moves, the second the card it
+    goes on. The debug UI takes one off again with an ordinary 'Discard'.
+    -}
+    DebugAttachCard Target Target
   | DebugCustomize InvestigatorId CardId
   | DebugIncreaseCustomization InvestigatorId CardCode Customization [CustomizationChoice]
   | SetScenarioDifficulty Difficulty

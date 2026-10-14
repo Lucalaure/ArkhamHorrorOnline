@@ -97,6 +97,7 @@ test('a skill test form encodes the DebugSkillTestSpec record', async (t) => {
     target: { tag: 'EnemyTarget', contents: 'enemy-1' },
     sourceCard: 'card-1',
     difficulty: { kind: 'target' },
+    costsAction: true,
   })
   assert.deepEqual(message, {
     tag: 'DebugBeginSkillTest',
@@ -107,13 +108,14 @@ test('a skill test form encodes the DebugSkillTestSpec record', async (t) => {
       target: { tag: 'EnemyTarget', contents: 'enemy-1' },
       sourceCard: 'card-1',
       difficulty: { tag: 'DebugDifficultyOfTarget' },
+      costsAction: true,
     },
   })
 })
 
 test('combined, fixed and plain tests encode their own shapes', async (t) => {
   const { beginSkillTestMessage } = await load(t)
-  const base = { investigator: '01001', action: null, target: null, sourceCard: null }
+  const base = { investigator: '01001', action: null, target: null, sourceCard: null, costsAction: false }
   const combined = beginSkillTestMessage({
     ...base,
     skill: { kind: 'combined', skills: ['SkillWillpower', 'SkillIntellect'] },

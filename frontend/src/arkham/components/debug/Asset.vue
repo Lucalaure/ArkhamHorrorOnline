@@ -11,6 +11,8 @@ import KeyToken from '@/arkham/components/Key.vue';
 import Modifier from '@/arkham/components/Modifier.vue';
 import PoolItem from '@/arkham/components/PoolItem.vue';
 import SealedTokensSection from '@/arkham/components/debug/SealedTokensSection.vue';
+import TokenEditor from '@/arkham/components/debug/TokenEditor.vue';
+import AttachSection from '@/arkham/components/debug/AttachSection.vue';
 import * as Arkham from '@/arkham/types/Asset';
 import {isUse} from '@/arkham/types/Token';
 import { useDbCardStore } from '@/stores/dbCards'
@@ -27,18 +29,15 @@ const props = defineProps<{
 const emit = defineEmits<{ close: [] }>()
 
 useEscape(() => emit('close'))
-const placeTokens = ref(false);
 const setModifiers = ref(false);
 const inspectSpiritDeck = ref(false);
-const placeTokenType = ref<Token>(
+// The asset's own use (ammo, charges, ...) is what the token picker starts on.
+const defaultToken = computed<Token>(() =>
   (Object.
     entries(props.asset.tokens).
     filter(([k, v]) => isUse(k) && (v ?? 0) > 0)[0] ?? [])[0]
-  ?? "Evidence"
+  ?? "Resource"
 );
-
-const isNumber = (value: unknown): value is number => typeof value === 'number';
-const anyTokens = computed(() => Object.values(props.asset.tokens).some(t => isNumber(t) && t > 0))
 
 const investigatorId = computed(() => Object.values(props.game.investigators).find(i => i.playerId === props.playerId)?.id)
 const id = computed(() => props.asset.id)
@@ -69,7 +68,6 @@ const formatUse = (k: string) => k.replace(/([a-z])([A-Z])/g, '$1 $2')
 const damage = computed(() => props.asset.tokens[TokenType.Damage])
 const horror = computed(() => props.asset.tokens[TokenType.Horror])
 
-const tokenTypes = Object.values(TokenType);
 const spiritDeck = computed(() => props.asset.spiritDeck ?? [])
 const spiritDeckCardImage = (card: ArkhamCard) => imgsrc(cardToImage(card))
 const spiritDeckCardImageId = (card: ArkhamCard) => toCardContents(card).art ?? asCardCode(card).replace(/^c/, '')
@@ -140,12 +138,6 @@ const hasPool = computed(() => {
         </div>
       </div>
       <div class="asset--side">
-      <div v-if="placeTokens" class="buttons">
-        <select v-model="placeTokenType">
-          <option v-for="token in tokenTypes" :key="token" :value="token">{{ token }}</option>
-        </select>
-        <button @click="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'PlaceTokens_', contents: [{ tag: 'GameSource' }, { tag: 'AssetTarget', contents: id}, placeTokenType, 1]}})">{{ $t('debug.common.place') }}</button>
-      </div>
       <div v-if="showSlots" class="buttons">
         <div class="slots">{{slots}}</div>
         <button @click="showSlots = false">{{ $t('debug.common.back') }}</button>
@@ -171,8 +163,6 @@ const hasPool = computed(() => {
         <Modifier :modifier="modifier" :game="game" v-for="(modifier, idx) in asset.modifiers" :key="idx" />
       </div>
       <div v-else class="buttons">
-        <button @click="placeTokens = true">{{ $t('debug.common.placeTokens') }}</button>
-        <button v-if="anyTokens" @click="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'ClearTokens_', contents: { tag: 'AssetTarget', contents: id}}})">{{ $t('debug.common.removeAllTokens') }}</button>
         <button v-if="asset.owner !== investigatorId" @click="debug.send(game.id, {tag: 'TakeControlOfAsset', contents: [investigatorId, id]})">{{ $t('debug.asset.takeControl') }}</button>
         <button v-if="exhausted" @click="debug.send(game.id, {tag: 'Ready', contents: { tag: 'AssetTarget', contents: id}})">{{ $t('debug.asset.ready') }}</button>
         <button v-else @click="debug.send(game.id, {tag: 'Exhaust', contents: { tag: 'AssetTarget', contents: id}})">{{ $t('debug.asset.exhaust') }}</button>
@@ -193,6 +183,17 @@ const hasPool = computed(() => {
       </div>
       <!-- Under the buttons, beside the card, rather than below the whole
            window, so it fills space the card leaves empty. -->
+      <AttachSection
+        :game="game"
+        :card="{ tag: 'AssetTarget', contents: id }"
+        :placement="asset.placement"
+      />
+      <TokenEditor
+        :game="game"
+        :tokens="asset.tokens"
+        :target="{ tag: 'AssetTarget', contents: id }"
+        :defaultToken="defaultToken"
+      />
       <SealedTokensSection
         :game="game"
         :tokens="asset.sealedChaosTokens"

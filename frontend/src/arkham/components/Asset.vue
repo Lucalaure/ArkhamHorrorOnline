@@ -21,6 +21,7 @@ import Investigator from '@/arkham/components/Investigator.vue';
 import Event from '@/arkham/components/Event.vue';
 import Enemy from '@/arkham/components/Enemy.vue';
 import Treachery from '@/arkham/components/Treachery.vue';
+import ExtraAttachments from '@/arkham/components/ExtraAttachments.vue';
 import TokenPool, { type TokenPoolItem } from '@/arkham/components/TokenPool.vue';
 import CardsUnderIndicator from '@/arkham/components/CardsUnderIndicator.vue';
 import AbilitiesMenu from '@/arkham/components/AbilitiesMenu.vue'
@@ -558,6 +559,14 @@ function startDrag(event: DragEvent) {
         :playerId="playerId"
         :key="treacheryId"
         @choose="$emit('choose', $event)"
+      />
+      <!-- Attached assets only get a row of their own on The Beyond. -->
+      <ExtraAttachments
+        :game="game"
+        :playerId="playerId"
+        :host="{ tag: 'AssetTarget', contents: asset.id }"
+        :skip="isTheBeyond ? ['assets', 'events', 'treacheries'] : ['events', 'treacheries']"
+        @choose="choose"
       />
       <ScarletKey
         v-for="skId in asset.scarletKeys"

@@ -14,6 +14,7 @@ import { MessageType } from '@/arkham/types/Message';
 import AbilityButton from '@/arkham/components/AbilityButton.vue';
 import PoolItem from '@/arkham/components/PoolItem.vue';
 import Treachery from '@/arkham/components/Treachery.vue';
+import ExtraAttachments from '@/arkham/components/ExtraAttachments.vue';
 import Event from '@/arkham/components/Event.vue';
 import Enemy from '@/arkham/components/Enemy.vue';
 import Story from '@/arkham/components/Story.vue';
@@ -414,6 +415,13 @@ const wards = computed(() => props.agenda.tokens[TokenType.Ward])
           @choose="$emit('choose', $event)"
         />
       </div>
+      <ExtraAttachments
+        :game="game"
+        :playerId="playerId"
+        :host="{ tag: 'AgendaTarget', contents: agenda.id }"
+        :skip="['treacheries']"
+        @choose="$emit('choose', $event)"
+      />
       <div v-if="groupedTreacheries.length > 0" class="treacheries">
         <div
           v-for="([cCode, treacheries], idx) in groupedTreacheries"

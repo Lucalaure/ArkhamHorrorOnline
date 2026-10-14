@@ -4,12 +4,13 @@ import { useEscape } from '@/composable/escape';
 import Draggable from '@/components/Draggable.vue';
 import PoolItem from '@/arkham/components/PoolItem.vue';
 import SealedTokensSection from '@/arkham/components/debug/SealedTokensSection.vue';
-import { computed, ref } from 'vue';
+import TokenEditor from '@/arkham/components/debug/TokenEditor.vue';
+import { computed } from 'vue';
 import { useDebug } from '@/arkham/debug';
 import type { Game } from '@/arkham/types/Game';
 import * as Arkham from '@/arkham/types/Location';
 import { cardImg } from '@/arkham/helpers';
-import { TokenType, type Token } from '@/arkham/types/Token';
+import { TokenType } from '@/arkham/types/Token';
 import officialCampaigns from '@/arkham/data/campaigns.json';
 import allScenarios from '@/arkham/data/scenarios';
 import { homebrewCampaigns } from '@/arkham/homebrewData';
@@ -23,13 +24,7 @@ type Props = {
 
 const emit = defineEmits<{ close: [] }>()
 const props = defineProps<Props>()
-const placeTokens = ref(false);
-const placeTokenType = ref<Token>("Clue");
-const tokenTypes = Object.values(TokenType);
 const floodLevels: Arkham.FloodLevel[] = ['Unflooded', 'PartiallyFlooded', 'FullyFlooded'];
-
-const isNumber = (value: unknown): value is number => typeof value === 'number';
-const anyTokens = computed(() => Object.values(props.location.tokens).some(t => isNumber(t) && t > 0))
 
 /* The flood controls follow the campaign's declared `floodRules` rather than an id
    allowlist, which had hidden them from the homebrew Return to Innsmouth box. A
@@ -97,14 +92,8 @@ const createModifier = (target: {tag: string, contents: string}, modifier: {tag:
           </div>
         </div>
       </div>
-      <div v-if="placeTokens" class="buttons">
-        <select v-model="placeTokenType">
-          <option v-for="token in tokenTypes" :key="token" :value="token">{{ token }}</option>
-        </select>
-        <button @click="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'PlaceTokens_', contents: [{ tag: 'GameSource' }, { tag: 'LocationTarget', contents: id}, placeTokenType, 1]}})">{{ $t('debug.common.place') }}</button>
-        <button @click="placeTokens = false">{{ $t('debug.common.back') }}</button>
-      </div>
-      <div v-else class="buttons">
+      <div class="location--side">
+      <div class="buttons">
         <div v-if="canAdjustFloodLevel" class="flood-level-controls">
           <span>{{ $t('debug.location.floodLevel') }}</span>
           <button
@@ -118,18 +107,21 @@ const createModifier = (target: {tag: string, contents: string}, modifier: {tag:
         </div>
         <button v-if="location.cardCode == 'c03139'" @click="createModifier({tag: 'LocationTarget', contents: id}, {tag: 'AddTrait', contents: 'Passageway'})">{{ $t('debug.location.addPassageway') }}</button>
         <button v-if="!location.revealed" @click="debug.send(game.id, {tag: 'RevealLocation', contents: [null, id]})">{{ $t('debug.location.reveal') }}</button>
-        <button v-if="clues && clues > 0" @click="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'RemoveTokens_', contents: [{ tag: 'TestSource', contents: []}, { tag: 'LocationTarget', contents: id }, 'Clue', clues]}})">{{ $t('debug.location.removeClues') }}</button>
-        <button @click="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'PlaceTokens_', contents: [{ tag: 'TestSource', contents: []}, { tag: 'LocationTarget', contents: id }, 'Clue', 1]}})">{{ $t('debug.location.placeClue') }}</button>
         <button v-if="location.revealed" @click="debug.send(game.id, {tag: 'Reset', contents: { 'tag': 'LocationTarget', contents: id }})">{{ $t('debug.location.reset') }}</button>
-        <button @click="placeTokens = true">{{ $t('debug.common.placeTokens') }}</button>
-        <button v-if="anyTokens" @click="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'ClearTokens_', contents: { tag: 'LocationTarget', contents: id}}})">{{ $t('debug.common.removeAllTokens') }}</button>
       </div>
-      </div>
+      <TokenEditor
+        :game="game"
+        :tokens="location.tokens"
+        :target="{ tag: 'LocationTarget', contents: id }"
+        defaultToken="Clue"
+      />
       <SealedTokensSection
         :game="game"
         :tokens="location.sealedChaosTokens"
         :target="{ tag: 'LocationTarget', contents: id }"
       />
+      </div>
+      </div>
       <button class="debug-close" @click="emit('close')">{{ $t('debug.common.close') }}</button>
     </div>
   </Draggable>
@@ -154,8 +146,16 @@ const createModifier = (target: {tag: string, contents: string}, modifier: {tag:
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  flex: 1;
   gap: 5px;
+}
+
+/* Right of the card: the action buttons, then the token pool, then sealed tokens */
+.location--side {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 10px;
 }
 
 .flood-level-controls {

@@ -28,6 +28,7 @@ import Arkham.Cost qualified as Cost
 import Arkham.DamageEffect
 import Arkham.Debug
 import Arkham.Debug.CardDestination
+import Arkham.Debug.InvestigatorStat
 import Arkham.Debug.SkillTest
 import Arkham.Deck qualified as Deck
 import Arkham.Decklist
@@ -3025,6 +3026,61 @@ runGameMessage msg g = case msg of
         , ShuffleCardsIntoDeck (Deck.InvestigatorDeck iid) [card']
         ]
     pure g
+  DebugSetInvestigatorStat iid stat n -> do
+    -- Lowering health or sanity under the damage or horror already taken
+    -- defeats them, as it would from any other source.
+    push $ Msg.CheckDefeated GameSource (InvestigatorTarget iid)
+    let
+      setStat :: InvestigatorAttrs -> InvestigatorAttrs
+      setStat a = case stat of
+        DebugStatHealth -> a {investigatorHealth = max 1 n}
+        DebugStatSanity -> a {investigatorSanity = max 1 n}
+        DebugStatWillpower -> a {investigatorWillpower = max 0 n}
+        DebugStatIntellect -> a {investigatorIntellect = max 0 n}
+        DebugStatCombat -> a {investigatorCombat = max 0 n}
+        DebugStatAgility -> a {investigatorAgility = max 0 n}
+    pure $ g & entitiesL . investigatorsL . ix iid %~ overAttrs setStat
+  DebugResetInvestigatorStats iid -> do
+    push $ Msg.CheckDefeated GameSource (InvestigatorTarget iid)
+    let
+      reset investigator =
+        let printed = toAttrs $ lookupInvestigator iid (attr investigatorPlayerId investigator)
+         in overAttrs
+              ( \a ->
+                  a
+                    { investigatorHealth = investigatorHealth printed
+                    , investigatorSanity = investigatorSanity printed
+                    , investigatorWillpower = investigatorWillpower printed
+                    , investigatorIntellect = investigatorIntellect printed
+                    , investigatorCombat = investigatorCombat printed
+                    , investigatorAgility = investigatorAgility printed
+                    }
+              )
+              investigator
+    pure $ g & entitiesL . investigatorsL . ix iid %~ reset
+  DebugAttachCard card host -> do
+    let
+      attachedTo = \case
+        LocationTarget lid -> Just (AttachedToLocation lid)
+        EnemyTarget eid -> Just (AttachedToEnemy eid)
+        AssetTarget aid -> Just (AttachedToAsset aid Nothing)
+        EventTarget eid -> Just (AttachedToEvent eid)
+        TreacheryTarget tid -> Just (AttachedToTreachery tid)
+        ActTarget aid -> Just (AttachedToAct aid)
+        AgendaTarget aid -> Just (AttachedToAgenda aid)
+        InvestigatorTarget iid -> Just (AttachedToInvestigator iid)
+        _ -> Nothing
+      place placement = case card of
+        AssetTarget aid -> push $ PlaceAsset aid placement
+        EventTarget eid -> push $ PlaceEvent eid placement
+        SkillTarget sid -> push $ PlaceSkill sid placement
+        TreacheryTarget tid -> push $ PlaceTreachery tid placement
+        _ -> pure ()
+    -- A card cannot hold itself.
+    case attachedTo host of
+      Just placement | host /= card -> place placement
+      _ -> Log.sendLog (Log.notice [Log.ikeyPart "log.debug.invalidRequest" []])
+    pure g
   DebugAddToEncounterDeck deck cardId -> do
     card <- getCard cardId
     push $ ShuffleCardsIntoDeck deck [card]
@@ -3088,12 +3144,28 @@ runGameMessage msg g = case msg of
                 Log.sendLog
                   $ Log.mechanic
                     [Log.ikeyPart "log.debug.startsSkillTest" ["investigator" Log.~> Log.investigatorRefById iid]]
-                push
-                  $ BeginSkillTest
-                  $ (buildSkillTest sid iid source target testType baseValue (SkillTestDifficulty difficulty))
-                    { skillTestAction = debugTestAction spec
-                    , skillTestSourceCard = debugTestSourceCard spec
-                    }
+                let
+                  beginTest =
+                    BeginSkillTest
+                      $ (buildSkillTest sid iid source target testType baseValue (SkillTestDifficulty difficulty))
+                        { skillTestAction = debugTestAction spec
+                        , skillTestSourceCard = debugTestSourceCard spec
+                        }
+                  -- Wrapped the way a real fight or evade is, so the action is
+                  -- paid for up front, "when/after you perform" reactions see it,
+                  -- and it is recorded as taken once the test is over.
+                  actions = toList (debugTestAction spec)
+                if debugTestCostsAction spec
+                  then do
+                    beforeWindows <- traverse (\action -> checkWindows [mkWhen $ Window.PerformAction iid action]) actions
+                    afterWindows <- traverse (\action -> checkWindows [mkAfter $ Window.PerformAction iid action]) actions
+                    pushAll
+                      $ [BeginAction]
+                      <> beforeWindows
+                      <> [TakeActions iid actions (Cost.ActionCost 1), beginTest]
+                      <> afterWindows
+                      <> [FinishAction, TakenActions iid actions]
+                  else push beginTest
                 pure g
           _ -> refuse "log.debug.invalidRequest"
   DebugMoveCard cardId destination -> do

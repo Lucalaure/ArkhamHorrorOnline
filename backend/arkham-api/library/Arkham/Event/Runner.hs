@@ -151,6 +151,14 @@ runEventMessage msg a@EventAttrs {..} = runQueueT $ case msg of
   RemovedLocation lid | isDirectlyAtLocation lid eventPlacement -> do
     push $ toDiscard GameSource a
     pure a
+  -- An act or agenda is replaced rather than removed from play, so the case above
+  -- never sees it go; an event attached to one leaves with it, as a treachery does.
+  ReplaceAct aid _ | eventPlacement == AttachedToAct aid -> do
+    push $ toDiscard GameSource a
+    pure a
+  ReplaceAgenda aid _ | eventPlacement == AttachedToAgenda aid -> do
+    push $ toDiscard GameSource a
+    pure a
   ReadyExhausted -> pure $ a & exhaustedL .~ False
   Ready (isTarget a -> True) -> pure $ a & exhaustedL .~ False
   Exhaust ea | a `isTarget` ea.target -> do

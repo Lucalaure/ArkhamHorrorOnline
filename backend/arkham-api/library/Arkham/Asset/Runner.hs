@@ -29,7 +29,7 @@ import Arkham.Helpers.Card (getVictoryPoints)
 import Arkham.Helpers.Customization
 import Arkham.Helpers.Modifiers
 import Arkham.Helpers.Placement
-import Arkham.Helpers.Ref (sourceToTarget)
+import Arkham.Helpers.Ref (sourceToMaybeTarget, sourceToTarget)
 import Arkham.Helpers.Source (getSourceController)
 import Arkham.Helpers.Use
 import Arkham.Helpers.Window (
@@ -734,6 +734,31 @@ instance RunMessage AssetAttrs where
     -- reaches the location through that host and leaves play when the host does,
     -- #5426.
     RemovedLocation lid | isDirectlyAtLocation lid a.placement -> do
+      push $ toDiscard GameSource a
+      pure a
+    -- An asset on an event or a treachery leaves play with it. Assets and enemies
+    -- already discard what is attached to them when they go, and a location's
+    -- attachments go on RemovedLocation, so those hosts are left to their own
+    -- runners rather than discarding this twice. Only while this asset is still in
+    -- play: see the matching event case for why the placement alone is not enough.
+    RemovedFromPlay source | not (isSource a source) -> do
+      let
+        hostWithoutCleanup = case placementToAttached a.placement of
+          Just target@(EventTarget _) -> Just target
+          Just target@(TreacheryTarget _) -> Just target
+          _ -> Nothing
+      -- Every source leaving play is broadcast here, and not all of them name a
+      -- target, so the non-throwing conversion.
+      for_ hostWithoutCleanup \host -> when (sourceToMaybeTarget source == Just host) do
+        stillInPlay <- selectAny $ AssetWithId a.id
+        when stillInPlay $ push $ toDiscard GameSource a
+      pure a
+    -- An act or agenda is replaced rather than removed from play, so an asset
+    -- attached to one goes when it is replaced, as an attached treachery does.
+    ReplaceAct aid _ | a.placement == AttachedToAct aid -> do
+      push $ toDiscard GameSource a
+      pure a
+    ReplaceAgenda aid _ | a.placement == AttachedToAgenda aid -> do
       push $ toDiscard GameSource a
       pure a
     PlaceKey (isTarget a -> True) k -> do

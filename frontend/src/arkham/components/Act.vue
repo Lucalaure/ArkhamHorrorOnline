@@ -10,6 +10,7 @@ import { useDebug } from '@/arkham/debug'
 import PoolItem from '@/arkham/components/PoolItem.vue'
 import KeyToken from '@/arkham/components/Key.vue'
 import Treachery from '@/arkham/components/Treachery.vue'
+import ExtraAttachments from '@/arkham/components/ExtraAttachments.vue'
 import Enemy from '@/arkham/components/Enemy.vue'
 import Asset from '@/arkham/components/Asset.vue'
 import ScarletKey from '@/arkham/components/ScarletKey.vue'
@@ -539,6 +540,13 @@ const chooseFromStoryCollection = (choice: number) => {
       :treachery="game.treacheries[treacheryId]"
       :game="game"
       :playerId="playerId"
+      @choose="$emit('choose', $event)"
+    />
+    <ExtraAttachments
+      :game="game"
+      :playerId="playerId"
+      :host="{ tag: 'ActTarget', contents: act.id }"
+      :skip="['treacheries']"
       @choose="$emit('choose', $event)"
     />
     <Enemy

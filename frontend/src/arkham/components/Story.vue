@@ -157,6 +157,8 @@ const sealedChaosTokens = computed(() => props.story.sealedChaosTokens ?? [])
       :image="image"
       :sealedTokens="sealedChaosTokens"
       :target="{ tag: 'StoryTarget', contents: id }"
+      :tokens="story.tokens"
+      defaultToken="Resource"
       @close="debugging = false"
     />
   </div>

@@ -2,12 +2,13 @@
 import Draggable from '@/components/Draggable.vue';
 import { computed, ref } from 'vue';
 import { useDebug } from '@/arkham/debug';
-import { TokenType, Token } from '@/arkham/types/Token';
+import { TokenType } from '@/arkham/types/Token';
 import { cardImg } from '@/arkham/helpers';
 import type { Game } from '@/arkham/types/Game';
 import PoolItem from '@/arkham/components/PoolItem.vue';
 import Modifier from '@/arkham/components/Modifier.vue';
 import SealedTokensSection from '@/arkham/components/debug/SealedTokensSection.vue';
+import TokenEditor from '@/arkham/components/debug/TokenEditor.vue';
 import * as Arkham from '@/arkham/types/Enemy'
 import { useEscape } from '@/composable/escape'
 
@@ -20,11 +21,6 @@ const props = defineProps<{
 const emit = defineEmits<{ close: [] }>()
 
 useEscape(() => emit('close'))
-const placeTokenType = ref<Token>("Damage");
-const tokenTypes = Object.values(TokenType);
-
-const isNumber = (value: unknown): value is number => typeof value === 'number';
-const anyTokens = computed(() => Object.values(props.enemy.tokens).some(t => isNumber(t) && t > 0))
 const isTrueForm = computed(() => {
   const { cardCode } = props.enemy
   return cardCode === 'cxnyarlathotep'
@@ -68,6 +64,11 @@ const image = computed(() => {
 
 const debug = useDebug()
 const damage = computed(() => props.enemy.tokens[TokenType.Damage])
+const damageInput = ref<number | string>(1)
+const damageAmount = computed(() => {
+  const n = Math.floor(Number(damageInput.value))
+  return Number.isFinite(n) && n > 0 ? n : 1
+})
 
 function defeat() {
   emit('close')
@@ -84,7 +85,7 @@ const hasPool = computed(() => {
 
 /* The + keeps going through DealDamage so the damage windows and the defeat check
  * still fire; the - heals, which is the real inverse rather than silently pulling
- * tokens off. Shift does five, matching the rest of the debug panels. */
+ * tokens off. The box beside the stepper sets how much each click does. */
 function dealDamage(amount: number) {
   debug.send(props.game.id, {
     tag: 'DamageMessage',
@@ -105,6 +106,8 @@ function dealDamage(amount: number) {
 }
 
 function healDamage(amount: number) {
+  amount = Math.min(amount, damage.value ?? 0)
+  if (amount <= 0) return
   debug.send(props.game.id, {
     tag: 'HealDamage',
     contents: [{ tag: 'EnemyTarget', contents: id.value }, { tag: 'GameSource' }, amount],
@@ -195,27 +198,34 @@ const createModifier = (target: {tag: string, contents: string}, modifier: {tag:
           </div>
         </section>
 
+        <!-- Damage goes through DealDamage / HealDamage so defeat still fires; the
+             token editor below places raw tokens of any kind. -->
         <section class="debug-section">
-          <span class="debug-label">{{ $t('debug.common.placeTokens') }}</span>
+          <span class="debug-label">{{ $t('debug.enemy.damage') }}</span>
           <div class="debug-row">
-            <div class="debug-stepper" v-tooltip="$t('debug.enemy.damage')">
-              <button type="button" @click.exact="healDamage(1)" @click.shift="healDamage(5)">−</button>
+            <div class="debug-stepper">
+              <button type="button" v-tooltip="$t('debug.enemy.healAmount', { amount: damageAmount })" @click="healDamage(damageAmount)">−</button>
               <PoolItem type="health" :amount="damage || 0" />
-              <button type="button" @click.exact="dealDamage(1)" @click.shift="dealDamage(5)">+</button>
+              <button type="button" v-tooltip="$t('debug.enemy.dealAmount', { amount: damageAmount })" @click="dealDamage(damageAmount)">+</button>
             </div>
-            <button v-if="anyTokens" @click="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'ClearTokens_', contents: { tag: 'EnemyTarget', contents: id}}})">{{ $t('debug.common.removeAllTokens') }}</button>
-          </div>
-          <div class="debug-row">
-            <select v-model="placeTokenType">
-              <option v-for="token in tokenTypes" :key="token" :value="token">{{ token }}</option>
-            </select>
-            <button
-              v-tooltip="$t('debug.enemy.shiftFive')"
-              @click.exact="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'PlaceTokens_', contents: [{ tag: 'GameSource' }, { tag: 'EnemyTarget', contents: id}, placeTokenType, 1]}})"
-              @click.shift="debug.send(game.id, {tag: 'TokenMessage', contents: {tag: 'PlaceTokens_', contents: [{ tag: 'GameSource' }, { tag: 'EnemyTarget', contents: id}, placeTokenType, 5]}})"
-            >{{ $t('debug.common.place') }}</button>
+            <input
+              v-model.number="damageInput"
+              class="debug-amount"
+              type="number"
+              min="1"
+              step="1"
+              :aria-label="$t('debug.tokens.amount')"
+              @focus="($event.target as HTMLInputElement).select()"
+            />
           </div>
         </section>
+
+        <TokenEditor
+          :game="game"
+          :tokens="enemy.tokens"
+          :target="{ tag: 'EnemyTarget', contents: id }"
+          defaultToken="Doom"
+        />
 
         <SealedTokensSection
           :game="game"
@@ -354,6 +364,17 @@ const createModifier = (target: {tag: string, contents: string}, modifier: {tag:
 .debug-stepper button:hover {
   background: var(--button);
   border-color: var(--select);
+}
+
+.debug-amount {
+  width: 4.5em;
+  padding: 5px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  background: var(--background-dark);
+  color: var(--text);
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 .debug-modifiers {

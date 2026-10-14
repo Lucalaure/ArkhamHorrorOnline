@@ -21,6 +21,7 @@ import ScarletKey from '@/arkham/components/ScarletKey.vue';
 import Asset from '@/arkham/components/Asset.vue';
 import EventView from '@/arkham/components/Event.vue';
 import Skill from '@/arkham/components/Skill.vue';
+import ExtraAttachments from '@/arkham/components/ExtraAttachments.vue';
 import HandCard from '@/arkham/components/HandCard.vue';
 import CardRow from '@/arkham/components/CardRow.vue';
 import CardsUnderIndicator from '@/arkham/components/CardsUnderIndicator.vue';
@@ -1101,6 +1102,16 @@ function closeHand() {
               :data-index="event.cardId"
               @choose="$emit('choose', $event)"
               @showCards="doShowCards"
+            />
+            <!-- Assets and skills attached to the investigator are not in the
+                 play-area lists above; events and treacheries already are. -->
+            <ExtraAttachments
+              :key="'extra-attachments'"
+              :game="game"
+              :playerId="playerId"
+              :host="{ tag: 'InvestigatorTarget', contents: investigatorId }"
+              :skip="['events', 'treacheries']"
+              @choose="$emit('choose', $event)"
             />
 
             <ScarletKey

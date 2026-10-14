@@ -2490,6 +2490,7 @@ library
       Arkham.DamageEffect
       Arkham.Debug
       Arkham.Debug.CardDestination
+      Arkham.Debug.InvestigatorStat
       Arkham.Debug.SkillTest
       Arkham.Deck
       Arkham.DeckBuilding.Adjustment
@@ -9408,6 +9409,7 @@ test-suite spec
       Arkham.Card.CardCodeSpec
       Arkham.ChaosTokenFaceSpec
       Arkham.Debug.ActionsSpec
+      Arkham.Debug.AttachSpec
       Arkham.Debug.CampaignLogSpec
       Arkham.Debug.SandboxSpec
       Arkham.Debug.SealSpec

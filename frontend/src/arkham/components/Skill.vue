@@ -113,6 +113,8 @@ const choose = (index: number) => emits('choose', index)
       :image="image"
       :sealedTokens="skill.sealedChaosTokens"
       :target="{ tag: 'SkillTarget', contents: id }"
+      :attachable="{ tag: 'SkillTarget', contents: id }"
+      :placement="skill.placement"
       @close="debugging = false"
     />
   </div>

@@ -701,7 +701,9 @@
       "release": "Release this token",
       "shiftFive": "Shift-click for 5",
       "disengage": "Disengage",
-      "disengageHint": "Moves the enemy off the investigator to their location. A ready enemy engages again at the next engagement check, so exhaust it too to keep it off."
+      "disengageHint": "Moves the enemy off the investigator to their location. A ready enemy engages again at the next engagement check, so exhaust it too to keep it off.",
+      "healAmount": "Heal {amount} damage",
+      "dealAmount": "Deal {amount} damage"
     },
     "location": {
       "title": "Debug Location",
@@ -868,6 +870,9 @@
       "target": "Target",
       "noTarget": "None",
       "useTargetValue": "Use the target's value",
+      "costsAction": "Costs an action",
+      "costsActionHint": "Spend one of the investigator's actions on this test, as taking the action would",
+      "noActionsLeft": "This investigator has no actions left to spend",
       "noTargetValue": "This target has no value to test against",
       "source": "On card",
       "sourceHint": "Only for effects that care what the test is on, such as \"a skill test on a Spell\". The card's own text does not run.",
@@ -882,6 +887,45 @@
       },
       "start": "Start test",
       "testActive": "A skill test is already in progress"
+    },
+    "tokens": {
+      "title": "Tokens",
+      "amount": "Amount",
+      "none": "No tokens on this card.",
+      "add": "Place {amount} {token}",
+      "remove": "Remove {amount} {token}",
+      "removeEvery": "Remove every {token}",
+      "place": "Place {amount}",
+      "common": "Common",
+      "other": "Other"
+    },
+    "attach": {
+      "title": "Attachment",
+      "attachedTo": "Attached to {name}",
+      "discard": "Discard",
+      "chooseHost": "Attach to…",
+      "attach": "Attach",
+      "groups": {
+        "investigators": "Investigators",
+        "locations": "Locations",
+        "enemies": "Enemies",
+        "assets": "Assets",
+        "events": "Events",
+        "treacheries": "Treacheries",
+        "acts": "Acts",
+        "agendas": "Agendas"
+      }
+    },
+    "investigatorStats": {
+      "title": "Base stats",
+      "hint": "Changes the printed values; modifiers still apply on top.",
+      "willpower": "Willpower",
+      "intellect": "Intellect",
+      "combat": "Combat",
+      "agility": "Agility",
+      "health": "Health",
+      "sanity": "Sanity",
+      "reset": "Reset to card values"
     }
   },
   "customizations": {

@@ -18,8 +18,12 @@ import Arkham.Target as X
 import Arkham.Card
 import Arkham.ChaosToken
 import Arkham.Classes.Entity
+import Arkham.Classes.Query (selectAny)
 import Arkham.Classes.RunMessage
 import Arkham.Helpers.Customization
+import Arkham.Helpers.Ref (sourceToMaybeTarget)
+import Arkham.Matcher (SkillMatcher (SkillWithId))
+import Arkham.Message qualified as Msg
 import Arkham.Helpers.Window (checkAfter, checkWhen, checkWindows, wouldWindows)
 import Arkham.Placement
 import Arkham.Prelude
@@ -104,6 +108,28 @@ instance RunMessage SkillAttrs where
       pure a
     Committed iid msg'@(UseAbility iid' ab _) | iid == iid' && (isSource a ab.source || isProxySource a ab.source) -> do
       push $ Do msg'
+      pure a
+    {- A skill only stays on the table when something attaches it -- a card that
+    leaves it on a location, or the debug attach on anything at all -- and it
+    leaves play with whatever holds it. Nothing else sweeps it up: no host
+    discards the skills attached to it. Only while still in play, for the reason
+    the event runner gives. -}
+    RemovedFromPlay source | not (isSource a source) -> do
+      for_ (placementToAttached a.placement) \host -> when (sourceToMaybeTarget source == Just host) do
+        stillInPlay <- selectAny $ SkillWithId (toId a)
+        when stillInPlay $ push $ toDiscard GameSource a
+      pure a
+    RemovedLocation lid | isDirectlyAtLocation lid a.placement -> do
+      push $ toDiscard GameSource a
+      pure a
+    ReplaceAct aid _ | a.placement == AttachedToAct aid -> do
+      push $ toDiscard GameSource a
+      pure a
+    ReplaceAgenda aid _ | a.placement == AttachedToAgenda aid -> do
+      push $ toDiscard GameSource a
+      pure a
+    Msg.InvestigatorEliminated iid | a.placement == AttachedToInvestigator iid -> do
+      push $ toDiscard GameSource a
       pure a
     SetLocationOutOfGame lid -> do
       case skillPlacement a of

@@ -26,6 +26,8 @@ import Event from '@/arkham/components/Event.vue'
 import Story from '@/arkham/components/Story.vue'
 import ScarletKey from '@/arkham/components/ScarletKey.vue'
 import Treachery from '@/arkham/components/Treachery.vue'
+import ExtraAttachments from '@/arkham/components/ExtraAttachments.vue'
+import { attachedTo } from '@/arkham/debugAttach'
 import SealedChaosTokens from '@/arkham/components/SealedChaosTokens.vue'
 import { locationTarget, cardDropHandlers, draggedOff, removeDragAttrs } from '@/arkham/debugCardDrop'
 import AbilitiesMenu from '@/arkham/components/AbilitiesMenu.vue'
@@ -289,9 +291,15 @@ const treacheries = computed(() => {
   )
 })
 
+// Assets, events and treacheries have their own lists here; skills do not.
+const attachedSkills = computed(() =>
+  attachedTo(props.game, { tag: 'LocationTarget', contents: props.location.id }).skills
+)
+
 const hasAttachments = computed(() => {
   return (
     treacheries.value.length > 0 ||
+    attachedSkills.value.length > 0 ||
     props.location.events.length > 0 ||
     attachedEnemies.value.length > 0 ||
     attachedKeys.value.length > 0
@@ -839,6 +847,13 @@ const hasAnyLocationVehicleAssets = computed(() =>
           :key="skId"
           @choose="choose"
           :attached="true"
+        />
+        <ExtraAttachments
+          :game="game"
+          :playerId="playerId"
+          :host="{ tag: 'LocationTarget', contents: location.id }"
+          :skip="['assets', 'events', 'treacheries']"
+          @choose="choose"
         />
       </div>
       <div class="location-asset-column" :class="{ 'abilities-hovering': abilitiesHovering }">

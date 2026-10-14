@@ -138,6 +138,15 @@ const targetId = ref('')
 const sourceCard = ref('')
 const difficultyKind = ref<'fixed' | 'target'>('fixed')
 const testDifficulty = ref(0)
+const costsAction = ref(false)
+
+// Nothing left to spend: the box is unticked and greyed out rather than letting
+// the server quietly take nothing.
+const hasActionToSpend = computed(() => {
+  const investigator = props.game.investigators[investigatorId.value]
+  return !!investigator && (investigator.remainingActions > 0 || investigator.additionalActions.length > 0)
+})
+watch(hasActionToSpend, (can) => { if (!can) costsAction.value = false }, { immediate: true })
 
 const actions: DebugTestAction[] = ['Fight', 'Evade', 'Investigate', 'Parley']
 
@@ -211,6 +220,7 @@ const form = computed<DebugSkillTestForm>(() => ({
   target: targetKind.value && targetId.value ? { tag: targetKind.value, contents: targetId.value } : null,
   sourceCard: sourceCard.value || null,
   difficulty: difficultyKind.value === 'target' ? { kind: 'target' } : { kind: 'fixed', value: testDifficulty.value },
+  costsAction: costsAction.value,
 }))
 
 const testActive = computed(() => props.game.skillTest !== null)
@@ -406,6 +416,14 @@ const startTest = () => {
               </label>
             </div>
           </div>
+
+          <label
+            class="sandbox__field sandbox__field--inline sandbox__field--wide"
+            v-tooltip="hasActionToSpend ? $t('debug.sandbox.costsActionHint') : $t('debug.sandbox.noActionsLeft')"
+          >
+            <input v-model="costsAction" type="checkbox" :disabled="!hasActionToSpend" />
+            <span>{{ $t('debug.sandbox.costsAction') }}</span>
+          </label>
         </section>
         <section class="sandbox__section sandbox__row">
           <span v-tooltip="testActive ? $t('debug.sandbox.testActive') : false">

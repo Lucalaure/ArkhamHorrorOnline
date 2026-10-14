@@ -18,6 +18,7 @@ import { MessageType } from '@/arkham/types/Message'
 import { cardId, toCardContents } from '@/arkham/types/Card'
 import SealedChaosTokens from '@/arkham/components/SealedChaosTokens.vue';
 import CardDebugWindow from '@/arkham/components/debug/CardDebugWindow.vue';
+import InvestigatorStatsEditor from '@/arkham/components/debug/InvestigatorStatsEditor.vue';
 import { investigatorTarget, cardDropHandlers } from '@/arkham/debugCardDrop';
 import AbilityButton from '@/arkham/components/AbilityButton.vue'
 import { useMenu } from '@/composable/menu';
@@ -621,7 +622,9 @@ const spadeInjury = computed(() => {
                 :sealedTokens="investigator.sealedChaosTokens"
                 :target="{ tag: 'InvestigatorTarget', contents: id }"
                 @close="debugging = false"
-              />
+              >
+                <InvestigatorStatsEditor :game="game" :investigator="investigator" />
+              </CardDebugWindow>
             </template>
             <AbilityButton
               v-for="ability in abilities"

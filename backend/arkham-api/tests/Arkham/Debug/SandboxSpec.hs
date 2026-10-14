@@ -5,6 +5,7 @@ import Arkham.Debug.SkillTest
 import Arkham.GameEnv (getSkillTest)
 import Arkham.Helpers.Scenario
 import Arkham.Scenario.Types (Field (..))
+import Arkham.Window (WindowType (PerformAction))
 import Data.Aeson.KeyMap qualified as KeyMap
 import TestImport.New
 
@@ -26,6 +27,7 @@ debugTest self skill =
     , debugTestTarget = Nothing
     , debugTestSourceCard = Nothing
     , debugTestDifficulty = DebugDifficultyFixed 0
+    , debugTestCostsAction = False
     }
 
 loadsBagWithoutSandboxField :: IO ()
@@ -154,6 +156,56 @@ spec = do
       run $ beginSkillTest sid self SkillIntellect 0
       run $ DebugBeginSkillTest (debugTest self (DebugTestFixed 0))
       (fmap (.id) <$> getSkillTest) `shouldReturn` Just sid
+
+    it "is free unless asked to cost an action" . gameTest $ \self -> do
+      withProp @"remainingActions" 3 self
+      setChaosTokens [Zero]
+      run $ DebugBeginSkillTest (debugTest self (DebugTestFixed 3))
+      startSkillTest
+      self.remainingActions `shouldReturn` 3
+
+    it "spends an action when asked to" . gameTest $ \self -> do
+      withProp @"remainingActions" 3 self
+      setChaosTokens [Zero]
+      run
+        $ DebugBeginSkillTest
+          (debugTest self (DebugTestFixed 3)) {debugTestCostsAction = True}
+      startSkillTest
+      self.remainingActions `shouldReturn` 2
+
+    it "opens the perform-action windows when it costs an action" . gameTest $ \self -> do
+      withProp @"intellect" 3 self
+      withProp @"remainingActions" 3 self
+      location <- testLocation & prop @"shroud" 2 & prop @"clues" 1
+      setChaosTokens [Zero]
+      self `moveTo` location
+      let
+        performsInvestigate = \case
+          PerformAction _ action -> action == #investigate
+          _ -> False
+      performed <- createMessageChecker \case
+        CheckWindows ws -> any (performsInvestigate . windowType) ws
+        _ -> False
+      run
+        $ DebugBeginSkillTest
+          (debugTest self (DebugTestOneSkill SkillIntellect))
+            { debugTestAction = Just #investigate
+            , debugTestTarget = Just (toTarget location)
+            , debugTestDifficulty = DebugDifficultyOfTarget
+            , debugTestCostsAction = True
+            }
+      startSkillTest
+      performed `refShouldBe` True
+      self.remainingActions `shouldReturn` 2
+
+    it "reads a spec sent before costsAction existed as free" do
+      let
+        old = object
+          [ "investigator" .= ("01001" :: Text)
+          , "skill" .= object ["tag" .= ("DebugTestFixed" :: Text), "contents" .= (0 :: Int)]
+          , "difficulty" .= object ["tag" .= ("DebugDifficultyFixed" :: Text), "contents" .= (0 :: Int)]
+          ]
+      fmap debugTestCostsAction (decode (encode old) :: Maybe DebugSkillTestSpec) `shouldBe` Just False
 
     it "refuses an investigate test with no location" . gameTest $ \self -> do
       run

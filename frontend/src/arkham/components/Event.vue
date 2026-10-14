@@ -2,6 +2,7 @@
 import { computed, ComputedRef, ref } from 'vue';
 import { useDebug } from '@/arkham/debug';
 import CardDebugWindow from '@/arkham/components/debug/CardDebugWindow.vue';
+import ExtraAttachments from '@/arkham/components/ExtraAttachments.vue';
 import MissingCardBadge from '@/arkham/components/MissingCardBadge.vue';
 import { Game } from '@/arkham/types/Game';
 import { Card } from '@/arkham/types/Card';
@@ -127,6 +128,12 @@ const choose = (index: number) => emits('choose', index)
       />
 
     <button v-if="cardsUnderneath.length > 0" class="view-discard-button" @click="showCardsUnderneath">{{cardsUnderneathLabel}}</button>
+    <ExtraAttachments
+      :game="game"
+      :playerId="playerId"
+      :host="{ tag: 'EventTarget', contents: event.id }"
+      @choose="choose"
+    />
     <template v-if="debug.active">
       <button class="debug-open" @click="debugging = true">{{ $t('enemy.debug') }}</button>
     </template>
@@ -137,6 +144,10 @@ const choose = (index: number) => emits('choose', index)
       :image="image"
       :sealedTokens="event.sealedChaosTokens"
       :target="{ tag: 'EventTarget', contents: id }"
+      :tokens="event.tokens"
+      defaultToken="Resource"
+      :attachable="{ tag: 'EventTarget', contents: id }"
+      :placement="event.placement"
       @close="debugging = false"
     />
   </div>

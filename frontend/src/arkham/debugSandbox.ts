@@ -73,6 +73,8 @@ export type DebugSkillTestForm = {
   target: DebugTestTarget | null
   sourceCard: string | null
   difficulty: { kind: 'fixed', value: number } | { kind: 'target' }
+  // Spend an action on the test, recorded as the chosen action (if any) taken.
+  costsAction: boolean
 }
 
 export function targetKindFor(action: DebugTestAction | null): DebugTestTarget['tag'] | null {
@@ -116,6 +118,7 @@ export function beginSkillTestMessage(form: DebugSkillTestForm) {
       target: form.target,
       sourceCard: form.sourceCard,
       difficulty,
+      costsAction: form.costsAction,
     },
   }
 }

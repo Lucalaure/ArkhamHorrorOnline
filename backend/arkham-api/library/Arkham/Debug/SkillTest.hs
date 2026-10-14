@@ -41,11 +41,27 @@ data DebugSkillTestSpec = DebugSkillTestSpec
   Only its traits and identity are seen; the card's own text does not run.
   -}
   , debugTestDifficulty :: DebugTestDifficulty
+  , debugTestCostsAction :: Bool
+  {- ^ Spend an action on it, as the action itself would: the action is taken
+  (so "same type of action" and the like see it) and the turn's count drops.
+  -}
   }
   deriving stock (Show, Eq, Ord, Data)
 
 mconcat
   [ deriveJSON defaultOptions ''DebugTestSkill
   , deriveJSON defaultOptions ''DebugTestDifficulty
-  , deriveJSON (aesonOptions $ Just "debugTest") ''DebugSkillTestSpec
+  , deriveToJSON (aesonOptions $ Just "debugTest") ''DebugSkillTestSpec
   ]
+
+-- | By hand only so that a spec sent before @costsAction@ existed still reads, as free.
+instance FromJSON DebugSkillTestSpec where
+  parseJSON = withObject "DebugSkillTestSpec" \o ->
+    DebugSkillTestSpec
+      <$> o .: "investigator"
+      <*> o .: "skill"
+      <*> o .:? "action"
+      <*> o .:? "target"
+      <*> o .:? "sourceCard"
+      <*> o .: "difficulty"
+      <*> o .:? "costsAction" .!= False

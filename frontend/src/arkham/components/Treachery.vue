@@ -14,6 +14,7 @@ import AbilitiesMenu from '@/arkham/components/AbilitiesMenu.vue'
 import { IsMobile } from '@/arkham/isMobile'
 import Token from '@/arkham/components/Token.vue';
 import CardDebugWindow from '@/arkham/components/debug/CardDebugWindow.vue';
+import ExtraAttachments from '@/arkham/components/ExtraAttachments.vue';
 import * as Arkham from '@/arkham/types/Treachery';
 
 export interface Props {
@@ -167,6 +168,12 @@ function handleCardClick() {
       />
       <Token v-for="(sealedToken, index) in treachery.sealedChaosTokens" :key="index" :token="sealedToken" :playerId="playerId" :game="game" @choose="choose" />
     </div>
+    <ExtraAttachments
+      :game="game"
+      :playerId="playerId"
+      :host="{ tag: 'TreacheryTarget', contents: treachery.id }"
+      @choose="choose"
+    />
 
     <template v-if="debug.active">
       <button @click="debug.send(game.id, {tag: 'Discard', contents: [null, { tag: 'GameSource' }, { tag: 'TreacheryTarget', contents: id}]})">{{ $t('treachery.discard') }}</button>
@@ -179,6 +186,10 @@ function handleCardClick() {
       :image="image"
       :sealedTokens="treachery.sealedChaosTokens"
       :target="{ tag: 'TreacheryTarget', contents: id }"
+      :tokens="treachery.tokens"
+      defaultToken="Resource"
+      :attachable="{ tag: 'TreacheryTarget', contents: id }"
+      :placement="treachery.placement"
       @close="debugging = false"
     />
   </div>
